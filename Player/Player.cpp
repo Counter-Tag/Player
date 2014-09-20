@@ -54,6 +54,9 @@ bool Player::isAlive() {
 
 void Player::spawn() {
     this->hp = this->maxHp;
+    if (this->weapon != null) {
+        this->weapon->refill();
+    }
 }
 
 Weapon* Player::getWeaponPtr() {
