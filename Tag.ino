@@ -5,11 +5,12 @@
 #include "include/Weapon/weapon_factory.h"
 
 Player* player;
-shot_t enemyDmgShot = {10, WF_DAMAGE_ENEMIES | 0b00000100};
-shot_t allyHealShot = {5, WF_DAMAGE_ENEMIES | WF_HEAL_ALLIES};
-shot_t* firedShot;
 
 void setup() {
+    shot_t enemyDmgShot = {10, WF_DAMAGE_ENEMIES | 0b00000100};
+    shot_t allyHealShot = {5, WF_DAMAGE_ENEMIES | WF_HEAL_ALLIES};
+    shot_t* firedShot;
+
     Serial.begin(9600);
 
     Serial.println("Creating new player...");
@@ -19,8 +20,6 @@ void setup() {
 
     player->setTeam(0);
     player->spawn();
-
-    player->getWeaponPtr()->refill();
     
     Serial.print("Created new player with team ");
     Serial.print(player->getTeam());
