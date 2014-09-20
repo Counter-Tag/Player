@@ -1,5 +1,12 @@
 #include "../include/Weapon/Weapon.h"
 
+/*
+ * Not used (yet)
+Weapon::Weapon() {
+
+}
+*/
+
 bool Weapon::canFire() {
     return this->magazineAmmo > 0 && this->nextFire < millis();
 }

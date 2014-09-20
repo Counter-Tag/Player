@@ -7,6 +7,8 @@
 
 class Player {
 public:
+    Player();
+    
     virtual bool canFire();
     virtual shot_t* fire();
 

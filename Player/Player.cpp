@@ -1,5 +1,9 @@
 #include "../include/Player/Player.h"
 
+Player::Player() {
+    this->weapon = NULL;
+}
+
 shot_t* Player::fire() {
     memcpy(&this->weapon_shot, this->weapon->fire(), sizeof(weapon_shot_t));
 
