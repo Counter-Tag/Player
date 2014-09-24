@@ -1,4 +1,4 @@
-#include "../include/Weapon/AK47.h"
+#include "../../include/Weapon/AK47.h"
 
 AK47::AK47() {
     this->cooldown = 100;

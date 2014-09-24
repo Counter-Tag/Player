@@ -1,7 +1,7 @@
-#include "../include/Player/player_factory.h"
+#include "../../include/Player/player_factory.h"
 
-#include "../include/Player/Player.h"
-#include "../include/Player/Trooper.h"
+#include "../../include/Player/Player.h"
+#include "../../include/Player/Trooper.h"
 
 Player* create_player(int id) {
     if(id == 0) {

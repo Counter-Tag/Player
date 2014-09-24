@@ -1,13 +1,15 @@
-.SUBLIME_TARGETS: all show_boards upload clean
+.SUBLIME_TARGETS: all reset upload clean
 
 ARDUINO_SKETCHBOOK = /home/roobre/Arduino/
 AVRDUDE = /usr/bin/avrdude
 AVRDUDE_CONF = /etc/avrdude.conf
-AVR_TOOLS_PATH = /usr/bin
+AVR_TOOLS_PATH = /usr/bin/
 
 BOARD_TAG = nano328
-ARDUINO_LIBS =
+ARDUINO_LIBS = LiquidCrystal
 
-SOURCE_FOLDERS = Player Weapon
+#CXXFLAGS_STD = -std=gnu++11
+
+SOURCE_FOLDERS = src src/Player src/Weapon
 
 include /home/roobre/Devel/Arduino-Makefile/Arduino.mk

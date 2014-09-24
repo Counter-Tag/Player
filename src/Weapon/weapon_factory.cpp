@@ -1,4 +1,4 @@
- #include "../include/Weapon/weapon_factory.h"
+ #include "../../include/Weapon/weapon_factory.h"
 
 Weapon* create_weapon(uint8_t id) {
     if (id == 0x00) {

@@ -1,4 +1,4 @@
-#include "../include/Player/Trooper.h"
+#include "../../include/Player/Trooper.h"
 
 Trooper::Trooper() {
     this->maxHp = 100;

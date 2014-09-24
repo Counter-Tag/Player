@@ -1,4 +1,4 @@
-#include "../include/Weapon/Weapon.h"
+#include "../../include/Weapon/Weapon.h"
 
 /*
  * Not used (yet)

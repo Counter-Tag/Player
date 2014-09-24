@@ -1,13 +1,19 @@
-#include "../include/Player/Player.h"
+#include "../../include/Player/Player.h"
 
-Player::Player() {
+Player::Player() : hud() {
     this->weapon = NULL;
+    //this->
+}
+
+bool Player::canFire() {
+    return this->weapon->canFire();
 }
 
 shot_t* Player::fire() {
     memcpy(&this->weapon_shot, this->weapon->fire(), sizeof(weapon_shot_t));
-
     this->applyOutModifiers(&this->weapon_shot);
+
+    this->hud.updateAmmo(this->weapon->getMagazineAmmo(), this->weapon->getAmmo());
 
     return (shot_t*) &this->weapon_shot;
 }
@@ -35,8 +41,14 @@ void Player::receiveShot(shot_t* shot) {
     }
 }
 
-bool Player::canFire() {
-    return this->weapon->canFire();
+void Player::reload() {
+    this->weapon->reload();
+    this->hud.updateAmmo(this->weapon->getMagazineAmmo(), this->weapon->getAmmo());
+}
+
+void Player::refill() {
+    this->weapon->refill();
+    this->hud.updateAmmo(this->weapon->getMagazineAmmo(), this->weapon->getAmmo());
 }
 
 uint8_t Player::getHp() {
@@ -50,6 +62,8 @@ void Player::changeHp(uint8_t hp) {
         this->hp = this->maxHp;
     else if (this->hp < 0)
         this->hp = 0;
+
+    this->hud.updateHp(100 * this->hp / this->maxHp);
 }
 
 bool Player::isAlive() {
@@ -57,10 +71,8 @@ bool Player::isAlive() {
 }
 
 void Player::spawn() {
-    this->hp = this->maxHp;
-    if (this->weapon != NULL) {
-        this->weapon->refill();
-    }
+    this->changeHp(this->maxHp);
+    this->refill();
 }
 
 Weapon* Player::getWeaponPtr() {
