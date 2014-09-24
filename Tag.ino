@@ -26,12 +26,12 @@ void setup() {
     Serial.print(" and hp ");
     Serial.println(player->getHp());
 
-    /*
+    delay(500);
     player->receiveShot(&enemyDmgShot);
     Serial.println(player->getHp());
+    delay(500);
     player->receiveShot(&allyHealShot);
     Serial.println(player->getHp());
-    */
 
     firedShot = player->fire();
     Serial.print("Fired shot with ");
@@ -48,5 +48,5 @@ void loop() {
         Serial.println(" bullets left.");
     }
 
-    delay(50);
+    delay(100);
 }

@@ -4,6 +4,7 @@
 #include <Arduino.h>
 
 #include "../Weapon/Weapon.h"
+#include "../HUD.h"
 
 class Player {
 public:
@@ -11,6 +12,9 @@ public:
     
     virtual bool canFire();
     virtual shot_t* fire();
+
+    virtual void reload();
+    virtual void refill();
 
     virtual void receiveShot(shot_t* shot);
 
@@ -41,6 +45,7 @@ protected:
 
     uint8_t team;
 
+    HUD hud;
     Weapon* weapon;
 
     void (**outModifiers)(weapon_shot_t* wshot);
