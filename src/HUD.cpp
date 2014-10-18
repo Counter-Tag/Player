@@ -13,8 +13,8 @@ void HUD::updateHp(int hp) {
   sprintf(this->buf, ":%i%%  ", hp);
 
   lcd.setCursor(0, 0);
-  //lcd.write(hp == 0 ? (uint8_t) 2 : (uint8_t) 0);
-  lcd.write((uint8_t) 0);
+  lcd.write(hp == 0 ? (uint8_t) 2 : (uint8_t) 0);
+  //lcd.write((uint8_t) 0);
   lcd.print(this->buf);
 }
 
