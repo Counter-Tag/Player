@@ -46,6 +46,10 @@ void Player::refill() {
     this->weapon->refill();
 }
 
+uint8_t Player::getMaxHp() {
+    return this->maxHp;
+}
+
 uint8_t Player::getHp() {
     return this->hp;
 }

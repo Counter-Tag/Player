@@ -21,6 +21,8 @@ public:
 
     virtual bool isAlive();
 
+    uint8_t getMaxHp();
+
     uint8_t getHp();
     void changeHp(uint8_t hp);
 
