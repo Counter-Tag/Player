@@ -14,9 +14,6 @@ public:
     virtual void reload();
     virtual void refill();
 
-    int getCooldown();
-    void setCooldown(int cooldown);
-
     int getCapacity();
     void setCapacity(int capacity);
 

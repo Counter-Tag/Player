@@ -57,13 +57,6 @@ void Weapon::setMagazineAmmo(uint8_t magazineAmmo) {
     this->magazineAmmo = magazineAmmo;
 }
 
-int Weapon::getCooldown() {
-    return this->cooldown;
-}
-void Weapon::setCooldown(int cooldown) {
-    this->cooldown = cooldown;
-}
-
 int Weapon::getCapacity() {
     return this->capacity;
 }
