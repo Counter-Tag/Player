@@ -14,20 +14,20 @@ public:
     virtual void reload();
     virtual void refill();
 
-    virtual int getCooldown();
-    virtual void setCooldown(int cooldown);
+    int getCooldown();
+    void setCooldown(int cooldown);
 
-    virtual int getCapacity();
-    virtual void setCapacity(int capacity);
+    int getCapacity();
+    void setCapacity(int capacity);
 
-    virtual int getAmmo();
-    virtual void setAmmo(int ammo);
+    int getAmmo();
+    void setAmmo(int ammo);
 
-    virtual uint8_t getMagazineCapacity();
-    virtual void setMagazineCapacity(uint8_t magazineCapacity);
+    uint8_t getMagazineCapacity();
+    void setMagazineCapacity(uint8_t magazineCapacity);
 
-    virtual uint8_t getMagazineAmmo();
-    virtual void setMagazineAmmo(uint8_t magazineAmmo);
+    uint8_t getMagazineAmmo();
+    void setMagazineAmmo(uint8_t magazineAmmo);
 
     virtual uint8_t getRange();
 
