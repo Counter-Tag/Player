@@ -81,3 +81,7 @@ void Weapon::setMagazineCapacity(uint8_t magazineCapacity) {
 uint8_t Weapon::getRange() {
     return this->range;
 }
+
+bool isAutomatic() {
+    return this.isAutomatic;
+}

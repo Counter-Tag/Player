@@ -31,6 +31,8 @@ public:
 
     virtual uint8_t getRange();
 
+    bool isAutomatic();
+
     weapon_shot_t  shot;
 
 protected:
@@ -46,6 +48,8 @@ protected:
     
     uint8_t magazineAmmo;
     uint8_t magazineCapacity;
+
+    bool isAutomatic;
 };
 
 #endif
