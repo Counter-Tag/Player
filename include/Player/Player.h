@@ -18,15 +18,17 @@ public:
 
     virtual void receiveShot(shot_t* shot);
 
-    virtual uint8_t getHp();
-    virtual void changeHp(uint8_t hp);
-    
+    virtual void spawn();
+
     virtual bool isAlive();
 
-    virtual void spawn();
+    uint8_t getHp();
+    void changeHp(uint8_t hp);    
 
     Weapon* getWeaponPtr();
     void setWeaponPtr(Weapon* weapon);
+
+    bool hasAutomaticWeapon();
 
     uint8_t getTeam();
     void setTeam(uint8_t team);

@@ -82,6 +82,10 @@ void Player::setWeaponPtr(Weapon* weapon) {
     this->weapon = weapon;
 }
 
+bool Player::hasAutomaticWeapon() {
+    return this->weapon->isAutomatic();
+}
+
 uint8_t Player::getTeam() {
     return this->team;
 }
