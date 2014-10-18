@@ -46,7 +46,7 @@ protected:
     uint8_t magazineAmmo;
     uint8_t magazineCapacity;
 
-    bool isAutomatic;
+    bool automatic;
 };
 
 #endif

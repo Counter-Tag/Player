@@ -75,6 +75,6 @@ uint8_t Weapon::getRange() {
     return this->range;
 }
 
-bool isAutomatic() {
-    return this.isAutomatic;
+bool Weapon::isAutomatic() {
+    return this->automatic;
 }
