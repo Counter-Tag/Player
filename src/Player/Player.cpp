@@ -1,8 +1,7 @@
 #include "../../include/Player/Player.h"
 
-Player::Player() : hud() {
+Player::Player() {
     this->weapon = NULL;
-    //this->
 }
 
 bool Player::canFire() {
@@ -12,8 +11,6 @@ bool Player::canFire() {
 shot_t* Player::fire() {
     memcpy(&this->weapon_shot, this->weapon->fire(), sizeof(weapon_shot_t));
     this->applyOutModifiers(&this->weapon_shot);
-
-    this->hud.updateAmmo(this->weapon->getMagazineAmmo(), this->weapon->getAmmo());
 
     return (shot_t*) &this->weapon_shot;
 }
@@ -43,12 +40,10 @@ void Player::receiveShot(shot_t* shot) {
 
 void Player::reload() {
     this->weapon->reload();
-    this->hud.updateAmmo(this->weapon->getMagazineAmmo(), this->weapon->getAmmo());
 }
 
 void Player::refill() {
     this->weapon->refill();
-    this->hud.updateAmmo(this->weapon->getMagazineAmmo(), this->weapon->getAmmo());
 }
 
 uint8_t Player::getHp() {
@@ -62,8 +57,6 @@ void Player::changeHp(uint8_t hp) {
         this->hp = this->maxHp;
     else if (this->hp < 0)
         this->hp = 0;
-
-    this->hud.updateHp(100 * this->hp / this->maxHp);
 }
 
 bool Player::isAlive() {
@@ -80,6 +73,14 @@ Weapon* Player::getWeaponPtr() {
 }
 void Player::setWeaponPtr(Weapon* weapon) {
     this->weapon = weapon;
+}
+
+uint8_t Player::getWeaponAmmo() {
+    return this->weapon->getAmmo();
+}
+
+uint8_t Player::getWeaponMagazineAmmo() {
+    return this->weapon->getMagazineAmmo();
 }
 
 bool Player::hasAutomaticWeapon() {

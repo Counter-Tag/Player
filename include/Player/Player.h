@@ -4,7 +4,6 @@
 #include <Arduino.h>
 
 #include "../Weapon/Weapon.h"
-#include "../HUD.h"
 
 class Player {
 public:
@@ -23,10 +22,14 @@ public:
     virtual bool isAlive();
 
     uint8_t getHp();
-    void changeHp(uint8_t hp);    
+    void changeHp(uint8_t hp);
 
     Weapon* getWeaponPtr();
     void setWeaponPtr(Weapon* weapon);
+
+    uint8_t getWeaponAmmo();
+
+    uint8_t getWeaponMagazineAmmo();
 
     bool hasAutomaticWeapon();
 
@@ -47,7 +50,6 @@ protected:
 
     uint8_t team;
 
-    HUD hud;
     Weapon* weapon;
 
     void (**outModifiers)(weapon_shot_t* wshot);
