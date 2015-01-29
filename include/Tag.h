@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "Player/Player.h"
 #include "HUD.h"
+#include "IR.h"
 #include "common.h"
 
 /**

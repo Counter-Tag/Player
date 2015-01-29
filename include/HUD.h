@@ -8,6 +8,7 @@ class HUD {
 public:
     HUD();
 
+    void init();
     void updateHp(int hp);
     void updateAmmo(int magazine, int total);
     void updateWeapon(const char* weapon);

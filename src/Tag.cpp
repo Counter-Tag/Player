@@ -10,7 +10,7 @@ Tag::Tag() : hud() {
     this->skillBtnStatus = false;
 }
 
-void Tag::loop() {
+inline void Tag::loop() {
     this->checkReload();
     this->checkSkill();
     this->checkFire();
@@ -71,5 +71,4 @@ void Tag::checkSpawnPoint() {
     // this->player->setWeaponPtr(create_weapon(conndata.weapon_id));
     // this->player->spawn();
     // this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
-
 }

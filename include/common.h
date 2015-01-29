@@ -12,4 +12,8 @@ const int RELOAD_PIN = 5;
 const int FIRE_PIN = 6;
 const int SKILL_PIN = 7;
 
+const int INTR_PIN = 0; // Means pin 2
+const int RECV_PIN = 2;
+const int SEND_PIN = 3;
+
 #endif

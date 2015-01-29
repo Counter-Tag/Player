@@ -5,8 +5,21 @@ HUD::HUD() : lcd(DISPLAY_PIN_RS, DISPLAY_PIN_E, DISPLAY_PIN_D4, DISPLAY_PIN_D5, 
   this->lcd.createChar(0, HUD::heart);
   this->lcd.createChar(1, HUD::bullet);
   this->lcd.createChar(2, HUD::skull);
-  
   this->lcd.begin(HUD::cols, HUD::rows = 2);
+
+  this->init();
+  this->updateHp(100);
+  this->updateAmmo(0, 0);
+}
+
+void HUD::init() {
+    lcd.setCursor(0, 0);
+    lcd.write((uint8_t) 0);
+    lcd.write(':');
+
+    lcd.setCursor(8, 0);
+    lcd.write((uint8_t) 1);
+    lcd.write(':');
 }
 
 void HUD::updateHp(int hp) {
@@ -14,15 +27,13 @@ void HUD::updateHp(int hp) {
 
   lcd.setCursor(0, 0);
   lcd.write(hp == 0 ? (uint8_t) 2 : (uint8_t) 0);
-  //lcd.write((uint8_t) 0);
   lcd.print(this->buf);
 }
 
 void HUD::updateAmmo(int magazine, int total) {
-  sprintf(this->buf, ":%i/%i ", magazine, total);
+  sprintf(this->buf, "%i/%i ", magazine, total);
 
-  lcd.setCursor(8, 0);
-  lcd.write((uint8_t) 1);
+  lcd.setCursor(8 + 2, 0); // 8 + 2: First row, second zone, skip bullet and colon characters.
   lcd.print(this->buf);
 }
 

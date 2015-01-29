@@ -4,6 +4,9 @@
 #include "include/Weapon/Weapon.h"
 #include "include/Weapon/weapon_factory.h"
 
+#include "include/HUD.h"
+
+HUD hud;
 Player* player;
 
 void setup() {
@@ -25,13 +28,16 @@ void setup() {
     Serial.print(player->getTeam());
     Serial.print(" and hp ");
     Serial.println(player->getHp());
-
     delay(500);
+
     player->receiveShot(&enemyDmgShot);
     Serial.println(player->getHp());
+    hud.updateHp(player->getHp());
     delay(500);
+
     player->receiveShot(&allyHealShot);
     Serial.println(player->getHp());
+    hud.updateHp(player->getHp());
 
     firedShot = player->fire();
     Serial.print("Fired shot with ");
@@ -44,9 +50,10 @@ void loop() {
     if (player->canFire()) {
         Serial.println("Fire!");
         player->fire();
-        Serial.print(player->getWeaponPtr()->getMagazineAmmo());
+        Serial.print(player->getWeaponMagazineAmmo());
         Serial.println(" bullets left.");
+        hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
     }
 
-    delay(100);
+    delay(200);
 }
