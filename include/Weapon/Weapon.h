@@ -14,6 +14,8 @@ public:
     virtual void reload();
     virtual void refill();
 
+    virtual const char* getName() = 0;
+
     int getCapacity();
     void setCapacity(int capacity);
 

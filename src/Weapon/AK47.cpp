@@ -11,3 +11,7 @@ AK47::AK47() {
 
     this->shot = (weapon_shot_t) {15, WF_DAMAGE_ENEMIES, 0x00};
 }
+
+const char* AK47::getName() {
+    return "AK47";
+}

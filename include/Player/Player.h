@@ -7,7 +7,7 @@
 
 class Player {
 public:
-    Player();
+    Player(Weapon* weapon);
     
     virtual bool canFire();
     virtual shot_t* fire();
@@ -20,6 +20,9 @@ public:
     virtual void spawn();
 
     virtual bool isAlive();
+
+    virtual const char* getClassName() = 0;
+    const char* getWeaponName();
 
     uint8_t getMaxHp();
 

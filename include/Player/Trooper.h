@@ -5,7 +5,9 @@
 
 class Trooper : public Player {
 public:
-    Trooper();
+    Trooper(Weapon* weapon);
+
+    const char* getClassName();
 
     static void bonusWeaponModifier(weapon_shot_t* wshot);
 };

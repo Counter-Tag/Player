@@ -1,7 +1,7 @@
 #include "../../include/Player/Player.h"
 
-Player::Player() {
-    this->weapon = NULL;
+Player::Player(Weapon* weapon) {
+    this->weapon = weapon;
 }
 
 bool Player::canFire() {
@@ -44,6 +44,10 @@ void Player::reload() {
 
 void Player::refill() {
     this->weapon->refill();
+}
+
+const char* Player::getWeaponName() {
+    return this->weapon->getName();
 }
 
 uint8_t Player::getMaxHp() {
