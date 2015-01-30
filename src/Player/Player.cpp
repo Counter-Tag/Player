@@ -5,7 +5,7 @@ Player::Player(Weapon* weapon) {
 }
 
 bool Player::canFire() {
-    return this->weapon->canFire();
+    return this->isAlive() && this->weapon->canFire();
 }
 
 shot_t* Player::fire() {
@@ -59,12 +59,13 @@ uint8_t Player::getHp() {
 }
 
 void Player::changeHp(uint8_t hp) {
-    this->hp += hp;
-
-    if (this->hp > this->maxHp)
+    if (this->hp + hp > this->maxHp) {
         this->hp = this->maxHp;
-    else if (this->hp < 0)
+    } else if (this->hp - hp < 0) {
         this->hp = 0;
+    } else {
+        this->hp += hp;
+    }
 }
 
 bool Player::isAlive() {
