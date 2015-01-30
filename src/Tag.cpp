@@ -10,6 +10,54 @@ Tag::Tag() : hud() {
     this->skillBtnStatus = false;
 }
 
+void Tag::spawn(uint8_t playerId, uint8_t weaponId) {
+    if (weaponId == 0x00) {
+        this->weapon = new AK47();
+    }
+
+    if (playerId == 0x00) {
+        this->player = new Trooper(this->weapon);
+    }
+
+    this->init();
+}
+
+void Tag::spawn(const char* playerName, const char* weaponName) {
+    if (!strcmp(weaponName, "AK47")) {
+        this->weapon = new AK47();
+    }
+
+    if (!strcmp(playerName, "Trooper")) {
+        this->player = new Trooper(this->weapon);
+    }
+
+    this->init();
+}
+
+void Tag::init() {
+    this->player->spawn();
+
+    this->hud.updateHp(this->player->getHp());
+    this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+    this->hud.updateClass(this->player->getClassName());
+    this->hud.updateWeapon(this->player->getWeaponName());
+}
+
+void Tag::fire() {
+    this->player->fire();
+    this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+}
+
+void Tag::reload() {
+    this->player->reload();
+    this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+}
+
+void Tag::receiveShot(shot_t* shot) {
+    this->player->receiveShot(shot);
+    this->hud.updateHp(100 * this->player->getHp() / this->player->getMaxHp());
+}
+
 inline void Tag::loop() {
     this->checkReload();
     this->checkSkill();
@@ -21,8 +69,7 @@ inline void Tag::loop() {
 void Tag::checkReload() {
     if (digitalRead(RELOAD_PIN)) {
         if (!reloadBtnStatus) {
-            this->player->reload();
-            this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+            this->reload();
         }
 
         this->reloadBtnStatus = true;
@@ -34,8 +81,7 @@ void Tag::checkReload() {
 void Tag::checkFire() {
     if (digitalRead(FIRE_PIN)) {
         if (!fireBtnStatus || player->hasAutomaticWeapon()) {
-            this->player->fire();
-            this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+            this->fire();
         }
 
         this->fireBtnStatus = true;
@@ -72,3 +118,4 @@ void Tag::checkSpawnPoint() {
     // this->player->spawn();
     // this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
 }
+

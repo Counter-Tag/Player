@@ -3,6 +3,9 @@
 
 #include <Arduino.h>
 #include "Player/Player.h"
+#include "Player/Trooper.h"
+#include "Weapon/Weapon.h"
+#include "Weapon/AK47.h"
 #include "HUD.h"
 #include "IR.h"
 #include "common.h"
@@ -24,8 +27,16 @@ public:
     void checkReceiveFire();
     void checkSpawnPoint();
 
+    void spawn(uint8_t playerId, uint8_t weaponId);
+    void spawn(const char* playerName, const char* weaponName);
+    void init();
+    void reload();
+    void fire();
+    void receiveShot(shot_t* shot);
+
 private:
     Player* player;
+    Weapon* weapon;
     HUD hud;
     //IR Library
     //Other HW stuff

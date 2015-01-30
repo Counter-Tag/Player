@@ -1,13 +1,6 @@
-#include "include/Player/Player.h"
-#include "include/Player/player_factory.h"
+#include "include/Tag.h"
 
-#include "include/Weapon/Weapon.h"
-#include "include/Weapon/weapon_factory.h"
-
-#include "include/HUD.h"
-
-HUD hud;
-Player* player;
+Tag tag;
 
 void setup() {
     shot_t enemyDmgShot = {10, WF_DAMAGE_ENEMIES | 0b00000100};
@@ -16,37 +9,12 @@ void setup() {
 
     Serial.begin(9600);
 
-    Serial.println("Creating new player...");
-    
-    player = create_player("Trooper");
-    player->setWeaponPtr(create_weapon("AK47"));
-
-    player->setTeam(0);
-    player->spawn();
-    
-    Serial.print("Created new player with team ");
-    Serial.print(player->getTeam());
-    Serial.print(" and hp ");
-    Serial.println(player->getHp());
-    delay(500);
-
-    player->receiveShot(&enemyDmgShot);
-    Serial.println(player->getHp());
-    hud.updateHp(player->getHp());
-    delay(500);
-
-    player->receiveShot(&allyHealShot);
-    Serial.println(player->getHp());
-    hud.updateHp(player->getHp());
-
-    firedShot = player->fire();
-    Serial.print("Fired shot with ");
-    Serial.print(firedShot->damage);
-    Serial.print(" damage and flags ");
-    Serial.println(firedShot->flags);
+    Serial.println("Spawning player...");
+    tag.spawn("Trooper", "AK47");
 }
 
 void loop() {
+    /*
     if (player->canFire()) {
         Serial.println("Fire!");
         player->fire();
@@ -56,4 +24,5 @@ void loop() {
     }
 
     delay(200);
+    */
 }
