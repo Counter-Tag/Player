@@ -1,11 +1,12 @@
 #include "include/Tag.h"
 
 Tag tag;
+shot_t enemyDmgShot;
+shot_t allyHealShot;
 
 void setup() {
-    shot_t enemyDmgShot = {10, WF_DAMAGE_ENEMIES | 0b00000100};
-    shot_t allyHealShot = {5, WF_DAMAGE_ENEMIES | WF_HEAL_ALLIES};
-    shot_t* firedShot;
+    enemyDmgShot = {10, WF_DAMAGE_ENEMIES | 0b00000100};
+    allyHealShot = {5, WF_DAMAGE_ENEMIES | WF_HEAL_ALLIES};
 
     Serial.begin(9600);
 
@@ -14,15 +15,7 @@ void setup() {
 }
 
 void loop() {
-    /*
-    if (player->canFire()) {
-        Serial.println("Fire!");
-        player->fire();
-        Serial.print(player->getWeaponMagazineAmmo());
-        Serial.println(" bullets left.");
-        hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
-    }
-
-    delay(200);
-    */
+    tag.fire();
+    //tag.receiveShot(&enemyDmgShot);
+    delay(250);
 }
