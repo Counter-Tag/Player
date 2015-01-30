@@ -8,7 +8,7 @@ HUD::HUD() : lcd(DISPLAY_PIN_RS, DISPLAY_PIN_E, DISPLAY_PIN_D4, DISPLAY_PIN_D5, 
   this->lcd.begin(HUD::cols, HUD::rows = 2);
 
   this->init();
-  this->updateHp(100);
+  this->updateHp(0);
   this->updateAmmo(0, 0);
 }
 
@@ -40,14 +40,14 @@ void HUD::updateAmmo(int magazine, int total) {
 void HUD::updateWeapon(const char* weapon) {
   sprintf(this->buf, "%s", weapon);
 
-  lcd.setCursor(0, 1);
+  lcd.setCursor(8, 1);
   lcd.print(this->buf);
 }
 
 void HUD::updateClass(const char* cls) {
   sprintf(this->buf, "%s", cls);
 
-  lcd.setCursor(8, 1);
+  lcd.setCursor(0, 1);
   lcd.print(this->buf);
 }
 

@@ -50,8 +50,15 @@ shot_t* IR::receiveShot() {
             }
         }
 
+
         // WARNING: We are waiting for invalid shots to make sense.
         if (valid) {
+            // Workaround for setting heal flags
+            if ((shot.flags & WF_TEAM) << 4 == 0x01) { // Team 3 aka heal shots in the provisional IR lib
+                shot.flags = WF_HEAL_ENEMIES | WF_HEAL_ALLIES;
+                shot.flags |= (0xff >> 4) & WF_TEAM; // Set team tag to 11
+            }
+            
             receivedShots[0] = 0;
             receivedShots[1] = 0;
             receivedShots[2] = 0;
@@ -72,8 +79,8 @@ void IR::interrupt() {
     if ((micros() - lastReceptionTime) > IR::MAX_RECEPTION_TIME) {
         period = 0;
         receivedShots[0] = 0;
+        receivedShots[1] = 0;
         receivedShots[2] = 0;
-        receivedShots[3] = 0;
     }
 
     period = micros() - lastReceptionTime;
