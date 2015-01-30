@@ -44,8 +44,13 @@ void Tag::init() {
 }
 
 void Tag::fire() {
-    this->player->fire();
-    this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+    if (this->player->canFire()) {
+        Serial.println("Player fired.");
+        this->player->fire();
+        this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+    } else {
+        Serial.println("Player couldn't fire.");
+    }
 }
 
 void Tag::reload() {
