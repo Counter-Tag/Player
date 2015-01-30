@@ -6,7 +6,7 @@
 
 class Weapon {
 public:
-    //Weapon();
+    Weapon();
 
     virtual weapon_shot_t* fire();
     virtual bool canFire();
