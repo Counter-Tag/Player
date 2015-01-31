@@ -7,10 +7,8 @@ Trooper::Trooper(Weapon* weapon) : Player::Player(weapon) {
 
     this->initOutModifiers(1);
     this->outModifiers[0] = Trooper::bonusWeaponModifier;
-}
 
-const char* Trooper::getClassName() {
-    return "Trooper";
+    this->name = "Trooper";
 }
 
 // AK-47 20% bonus

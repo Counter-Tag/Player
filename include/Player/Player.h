@@ -21,11 +21,9 @@ public:
 
     virtual bool isAlive();
 
-    virtual const char* getClassName() = 0;
-    const char* getWeaponName();
+    String getClassName();
 
     uint8_t getMaxHp();
-
     uint8_t getHp();
     void changeHp(uint8_t hp);
 
@@ -33,10 +31,9 @@ public:
     void setWeaponPtr(Weapon* weapon);
 
     uint8_t getWeaponAmmo();
-
     uint8_t getWeaponMagazineAmmo();
-
-    bool hasAutomaticWeapon();
+    uint8_t getWeaponType();
+    String getWeaponName();
 
     uint8_t getTeam();
     void setTeam(uint8_t team);
@@ -62,6 +59,8 @@ protected:
 
     uint8_t outModifiersSize;
     uint8_t inModifiersSize;
+
+    String name;
 };
 
 #endif

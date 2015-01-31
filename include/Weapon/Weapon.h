@@ -14,7 +14,6 @@ public:
     virtual void reload();
     virtual void refill();
 
-    virtual const char* getName() = 0;
 
     int getCapacity();
     void setCapacity(int capacity);
@@ -30,12 +29,19 @@ public:
 
     virtual uint8_t getRange();
 
-    bool isAutomatic();
+    uint8_t getType();
+    String getName();
 
     weapon_shot_t  shot;
 
+    String name;
+
+    static const uint8_t TYPE_SEMI = 0;
+    static const uint8_t TYPE_AUTO = 1;
+    static const uint8_t TYPE_NORE = 2;
+
 protected:
-    unsigned int nextFire;
+    unsigned long nextFire;
 
     int cooldown;
     int reloadCooldown;
@@ -48,7 +54,7 @@ protected:
     uint8_t magazineAmmo;
     uint8_t magazineCapacity;
 
-    bool automatic;
+    uint8_t type;
 };
 
 #endif

@@ -7,8 +7,6 @@ class AK47 : public Weapon {
 
 public:
     AK47();
-
-    const char* getName();
 };
 
 #endif

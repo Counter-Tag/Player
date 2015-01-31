@@ -46,10 +46,6 @@ void Player::refill() {
     this->weapon->refill();
 }
 
-const char* Player::getWeaponName() {
-    return this->weapon->getName();
-}
-
 uint8_t Player::getMaxHp() {
     return this->maxHp;
 }
@@ -72,8 +68,12 @@ bool Player::isAlive() {
     return this->hp != 0;
 }
 
+String Player::getClassName() {
+    return this->name;
+}
+
 void Player::spawn() {
-    this->changeHp(this->maxHp);
+    this->hp = this->maxHp;
     this->refill();
 }
 
@@ -92,8 +92,12 @@ uint8_t Player::getWeaponMagazineAmmo() {
     return this->weapon->getMagazineAmmo();
 }
 
-bool Player::hasAutomaticWeapon() {
-    return this->weapon->isAutomatic();
+uint8_t Player::getWeaponType() {
+    return this->weapon->getType();
+}
+
+String Player::getWeaponName() {
+    return this->weapon->getName();
 }
 
 uint8_t Player::getTeam() {

@@ -20,19 +20,21 @@ weapon_shot_t* Weapon::fire() {
 }
 
 void Weapon::reload() {
-    if (this->ammo > 0) {
-        int swap;
+    if (this->magazineAmmo < this->magazineCapacity) {
+        if (this->ammo > 0) {
+            int swap;
 
-        if (this->ammo > this->magazineCapacity) {
-            swap = this->magazineCapacity;
-        } else {
-            swap = ammo;
+            if (this->ammo > this->magazineCapacity) {
+                swap = this->magazineCapacity;
+            } else {
+                swap = ammo;
+            }
+
+            this->ammo -= swap;
+            this->magazineAmmo = swap;
+
+            this->nextFire = millis() + this->reloadCooldown;
         }
-
-        this->ammo -= swap;
-        this->magazineAmmo = swap;
-
-        this->nextFire = millis() + this->reloadCooldown;
     }
 }
 
@@ -73,6 +75,10 @@ uint8_t Weapon::getRange() {
     return this->range;
 }
 
-bool Weapon::isAutomatic() {
-    return this->automatic;
+uint8_t Weapon::getType() {
+    return this->type;
+}
+
+String Weapon::getName() {
+    return this->name;
 }
