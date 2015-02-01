@@ -17,8 +17,9 @@ shot_t* Player::fire() {
 
 void Player::receiveShot(shot_t* shot) {
     this->applyInModifiers(shot);
-
+    
     if (((shot->flags & WF_TEAM) >> 2) == this->team) {
+        Serial.println("Received ally shot");
         if (shot->flags & WF_DAMAGE_ALLIES) {
             Serial.println("Friendly fire!! Dealing damage.");
             this->changeHp(-shot->damage);
@@ -29,8 +30,8 @@ void Player::receiveShot(shot_t* shot) {
     } else {
         Serial.println("Received enemy shot");
         if (shot->flags & WF_DAMAGE_ENEMIES) {
-            Serial.println("Enemy fire! Dealing damage.");
-            this->changeHp(-shot->damage);
+            Serial.println("Enemy fire! Dealing ");
+            this->changeHp(-shot->damage); 
         } else if (shot->flags & WF_HEAL_ENEMIES) {
             Serial.println("Enemy healing!! Healing damage.");
             this->changeHp(shot->damage);
@@ -39,7 +40,9 @@ void Player::receiveShot(shot_t* shot) {
 }
 
 void Player::reload() {
-    this->weapon->reload();
+    if (this->isAlive()) {
+        this->weapon->reload();
+    }
 }
 
 void Player::refill() {
@@ -54,10 +57,10 @@ uint8_t Player::getHp() {
     return this->hp;
 }
 
-void Player::changeHp(uint8_t hp) {
+void Player::changeHp(int8_t hp) {
     if (this->hp + hp > this->maxHp) {
         this->hp = this->maxHp;
-    } else if (this->hp - hp < 0) {
+    } else if (this->hp + hp < 0) {
         this->hp = 0;
     } else {
         this->hp += hp;

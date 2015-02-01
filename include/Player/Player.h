@@ -25,7 +25,7 @@ public:
 
     uint8_t getMaxHp();
     uint8_t getHp();
-    void changeHp(uint8_t hp);
+    void changeHp(int8_t hp);
 
     Weapon* getWeaponPtr();
     void setWeaponPtr(Weapon* weapon);
