@@ -9,10 +9,11 @@ const int DISPLAY_PIN_D6 = 18;
 const int DISPLAY_PIN_D7 = 19;
 
 const int RELOAD_PIN = 5;
-const int FIRE_PIN = 6;
+const int POT_SELECT_PIN = 6;
 const int SKILL_PIN = 7;
+const int FIRE_PIN = 8;
 
-const int SDCS_PIN = 4;
+const int SDCS_PIN = 10;
 const int SPKR_PIN = 9; // Forced on non-mega boards due to timer constraints
 
 const int SPAWN_PIN = 12;
