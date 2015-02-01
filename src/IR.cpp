@@ -26,7 +26,7 @@ IR::IR() {
 }
 
 void IR::shoot(const shot_t* shot) {
-    const uint8_t type = (shot->flags & WF_TEAM) << 4;
+    const uint8_t type = (shot->flags & WF_TEAM) >> 2;
     const uint8_t pulses = shot->damage / IR::DAMAGE_PER_PULSE;
     int sent = 0;
 
@@ -59,8 +59,7 @@ void IR::interrupt() {
     // Space period equals to actual time less last reception time less constant period.
     period = micros() - lastReceptionTime - SHOT_TYPES[0];
     lastReceptionTime = micros();
-    int i = -1;
-    for (i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
         if (period > IR::SHOT_TYPES[i] - IR::LOW_HYSTERESIS && period < IR::SHOT_TYPES[i] + IR::HIGH_HYSTERESIS) {
             receivedShots[i]++;
             break; // Ugly, but we are interrupting main code execution and this must be as fast as possible.
@@ -78,29 +77,29 @@ shot_t* IR::receiveShot() {
 
     if (totalShots >= IR::MIN_SHOTS) {
         shot.damage = totalShots * DAMAGE_PER_PULSE;
-        shot.flags = (uint8_t) 0;
-
-        Serial.println("Minimum reached.");
         
-        for (int i = 0; i < 3; i++) {
+        for (uint8_t i = 0; i < 3; i++) {
             // Check if we have received more than 60% shots of one type
-            if ((receivedShots[i] * 10 / totalShots * 10) >= 6) {
-                shot.flags |= ((uint8_t) i >> 4) & WF_TEAM;
+            if (((float) receivedShots[i] / (float) totalShots) >= 0.6f) {
+                shot.flags = (i << 2) & WF_TEAM;
+                shot.flags |= WF_DAMAGE_ENEMIES;
                 valid = true;
                 break;
             }
         }
 
         if (valid) {
-            Serial.println("Valid shot received");
+            Serial.println();
+            Serial.print("Valid shot received team ");
+            Serial.println((shot.flags & WF_TEAM) >> 2);
             // Workaround for setting heal flags
-            if ((shot.flags & WF_TEAM) << 4 == 0x01) { // Team 3 aka heal shots in the provisional IR lib
+            if ((shot.flags & WF_TEAM) >> 2 == 3u) { // Team 3 aka heal shots in the provisional IR lib
                 shot.flags = WF_HEAL_ENEMIES | WF_HEAL_ALLIES;
-                shot.flags |= (1 >> 4) & WF_TEAM; // Set team tag to 11
+                shot.flags |= (_BV(3) | _BV(2)) & WF_TEAM; // Set team tag to 11
             }
 
             // TODO: Remove.
-            shot.flags = _BV(3) | WF_DAMAGE_ENEMIES;
+            //shot.flags = _BV(3) | WF_DAMAGE_ENEMIES;
 
             receivedShots[0] = 0;
             receivedShots[1] = 0;

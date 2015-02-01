@@ -21,10 +21,10 @@ public:
     unsigned long period;
 
 private:
-    static const uint16_t MAX_RECEPTION_TIME = 8000;
+    static const uint16_t MAX_RECEPTION_TIME = 4000;
 
     static const uint16_t LOW_HYSTERESIS = 100;
-    static const uint16_t HIGH_HYSTERESIS = 400;
+    static const uint16_t HIGH_HYSTERESIS = 200;
 
     static const uint8_t MIN_SHOTS = 2;
 
