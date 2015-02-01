@@ -10,6 +10,7 @@ bool Player::canFire() {
 
 shot_t* Player::fire() {
     memcpy(&this->weapon_shot, this->weapon->fire(), sizeof(weapon_shot_t));
+    this->weapon_shot.flags |= ((this->team << 2) & WF_TEAM);
     this->applyOutModifiers(&this->weapon_shot);
 
     return (shot_t*) &this->weapon_shot;
