@@ -9,6 +9,10 @@ bool Weapon::canFire() {
     return this->magazineAmmo > 0 && this->nextFire < millis();
 }
 
+bool Weapon::canReload() {
+    return this->magazineAmmo < this->magazineCapacity;
+}
+
 weapon_shot_t* Weapon::fire() {
     this->nextFire = millis() + this->cooldown;
     
@@ -20,21 +24,19 @@ weapon_shot_t* Weapon::fire() {
 }
 
 void Weapon::reload() {
-    if (this->magazineAmmo < this->magazineCapacity) {
-        if (this->ammo > 0) {
-            int swap;
+    if (this->ammo > 0) {
+        int swap;
 
-            if (this->ammo > this->magazineCapacity) {
-                swap = this->magazineCapacity;
-            } else {
-                swap = ammo;
-            }
-
-            this->ammo -= swap;
-            this->magazineAmmo = swap;
-
-            this->nextFire = millis() + this->reloadCooldown;
+        if (this->ammo > this->magazineCapacity) {
+            swap = this->magazineCapacity;
+        } else {
+            swap = ammo;
         }
+
+        this->ammo -= swap;
+        this->magazineAmmo = swap;
+
+        this->nextFire = millis() + this->reloadCooldown;
     }
 }
 

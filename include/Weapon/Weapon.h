@@ -10,6 +10,7 @@ public:
 
     virtual weapon_shot_t* fire();
     virtual bool canFire();
+    virtual bool canReload();
 
     virtual void reload();
     virtual void refill();

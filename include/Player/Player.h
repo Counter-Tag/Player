@@ -10,6 +10,7 @@ public:
     Player(Weapon* weapon);
     
     virtual bool canFire();
+    virtual bool canReload();
     virtual shot_t* fire();
 
     virtual void reload();
