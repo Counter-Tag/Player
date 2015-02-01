@@ -5,16 +5,20 @@ Tag::Tag() : hud(), tmrpcm(), ir() {
     pinMode(FIRE_PIN, INPUT);
     pinMode(SKILL_PIN, INPUT);
     pinMode(SPAWN_PIN, INPUT);
+    pinMode(POT_SELECT_PIN, OUTPUT);
 
     digitalWrite(RELOAD_PIN, HIGH);
     digitalWrite(FIRE_PIN, HIGH);
     digitalWrite(SKILL_PIN, HIGH);
     digitalWrite(SPAWN_PIN, HIGH);
+    digitalWrite(POT_SELECT_PIN, HIGH);
 
     this->reloadBtnStatus = false;
     this->fireBtnStatus = false;
     this->skillBtnStatus = false;
     this->spawnBtnStatus = false;
+
+    tmrpcm.speakerPin = SPKR_PIN;
 }
 
 void Tag::spawn(uint8_t playerId, uint8_t weaponId) {
@@ -46,6 +50,7 @@ void Tag::init() {
     this->player->spawn();
     Serial.print("Player hp: ");
     Serial.println(this->player->getHp());
+    this->tmrpcm.play("AK47.WAV");
     this->hud.updateHp(this->player->getHp());
     this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
     this->hud.updateClass(this->player->getClassName());
@@ -61,8 +66,11 @@ void Tag::fire() {
 }
 
 void Tag::reload() {
-    this->player->reload();
-    this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+    if (this->player->canReload()) {
+        this->player->reload();
+        this->tmrpcm.play("RELOAD.WAV");
+        this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+    }
 }
 
 void Tag::receiveShot(shot_t* shot) {
