@@ -9,28 +9,34 @@ class IR {
 public:
     IR();
 
-    static void interrupt();
-    
-    static void shoot(const shot_t* shot);
-    static shot_t* receiveShot();
+    void interrupt();
+    void shoot(const shot_t* shot);
+    shot_t* receiveShot();
+    static void timerSetup();
 
-    static shot_t shot;
+    shot_t shot;
 
+    static IR* instance;
+    static bool initialized;
+    unsigned long period;
 
 private:
     static const uint16_t MAX_RECEPTION_TIME = 8000;
-    
+
     static const uint16_t LOW_HYSTERESIS = 100;
     static const uint16_t HIGH_HYSTERESIS = 400;
 
-    static const uint8_t MIN_SHOTS = 3;
-
-    static const uint8_t CARRIER_PERIOD = 105; // 38kHz
+    static const uint8_t MIN_SHOTS = 2;
 
     static const uint16_t SHOT_TYPES[3];
 
-    static unsigned long lastReceptionTime;
-    static uint8_t receivedShots[3];
+    static const uint8_t DAMAGE_PER_PULSE = 3;
+
+    unsigned long lastReceptionTime;
+    uint8_t receivedShots[3];
+    uint8_t totalShots;
 };
+
+void ir_interrupt();
 
 #endif
