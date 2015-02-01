@@ -2,6 +2,7 @@
 #define TAG_H
 
 #include <Arduino.h>
+#include <TMRpcm.h>
 #include "Player/Player.h"
 #include "Player/Trooper.h"
 #include "Weapon/Weapon.h"
@@ -19,7 +20,7 @@ class Tag {
 public:
     Tag();
 
-    inline void loop();
+    void loop();
 
     void checkReload();
     void checkSkill();
@@ -28,7 +29,7 @@ public:
     void checkSpawnPoint();
 
     void spawn(uint8_t playerId, uint8_t weaponId);
-    void spawn(const char* playerName, const char* weaponName);
+    void spawn(const char* playerName, const char* weaponName, uint8_t team);
     void init();
     void reload();
     void fire();
@@ -38,12 +39,13 @@ private:
     Player* player;
     Weapon* weapon;
     HUD hud;
-    //IR Library
-    //Other HW stuff
+    TMRpcm tmrpcm;
+    IR ir;
 
     bool reloadBtnStatus;
     bool skillBtnStatus;
     bool fireBtnStatus;
+    bool spawnBtnStatus;
 };
 
 #endif
