@@ -5,8 +5,8 @@ AVRDUDE = /usr/bin/avrdude
 AVRDUDE_CONF = /etc/avrdude.conf
 AVR_TOOLS_PATH = /usr/bin/
 
-BOARD_TAG = nano328
-ARDUINO_LIBS = LiquidCrystal TMRpcm SD
+BOARD_TAG = pro5v328
+ARDUINO_LIBS = LiquidCrystal TMRpcm SPI SD
 
 #CXXFLAGS_STD = -std=gnu++11
 
