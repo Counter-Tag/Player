@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 #include <TMRpcm.h>
+#include <SPI.h>
+#include <SD.h>
 #include "Player/Player.h"
 #include "Player/Trooper.h"
 #include "Weapon/Weapon.h"
