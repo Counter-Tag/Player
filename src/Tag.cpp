@@ -54,7 +54,7 @@ void Tag::init() {
 
 void Tag::fire() {
     if (this->player->canFire()) {
-        //Serial.println("Fire!");
+        Serial.println("Fire!");
         ir.shoot(this->player->fire());
         this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
     }
