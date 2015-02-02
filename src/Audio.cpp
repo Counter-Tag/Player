@@ -5,7 +5,7 @@ Audio::Audio() : tmrpcm() {
 }
 
 void Audio::init() {
-    SD.begin(SDCS_PIN);
+    initialized = SD.begin(SDCS_PIN);
 }
 
 void Audio::play(const char* track) {
