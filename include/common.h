@@ -18,6 +18,8 @@ const int SPKR_PIN = 9; // Forced on non-mega boards due to timer constraints
 
 const int SPAWN_PIN = 12;
 
+const int TEAM_PIN = 11;
+
 const int INTR_PIN = 0; // Means pin 2
 const int RECV_PIN = 2;
 const int SEND_PIN = 3;
