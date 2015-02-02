@@ -1,78 +1,76 @@
 #include "../include/Tag.h"
 
-Tag::Tag() : hud(), tmrpcm(), ir() {
+Tag::Tag() : audio(), hud(), ir() {
     pinMode(RELOAD_PIN, INPUT);
     pinMode(FIRE_PIN, INPUT);
     pinMode(SKILL_PIN, INPUT);
     pinMode(SPAWN_PIN, INPUT);
+    pinMode(TEAM_PIN, INPUT);
     pinMode(POT_SELECT_PIN, OUTPUT);
 
     digitalWrite(RELOAD_PIN, HIGH);
     digitalWrite(FIRE_PIN, HIGH);
     digitalWrite(SKILL_PIN, HIGH);
     digitalWrite(SPAWN_PIN, HIGH);
+    digitalWrite(TEAM_PIN, HIGH);
     digitalWrite(POT_SELECT_PIN, HIGH);
 
-    this->reloadBtnStatus = false;
-    this->fireBtnStatus = false;
-    this->skillBtnStatus = false;
-    this->spawnBtnStatus = false;
-
-    tmrpcm.speakerPin = SPKR_PIN;
+    reloadBtnStatus = false;
+    fireBtnStatus = false;
+    skillBtnStatus = false;
+    spawnBtnStatus = false;
 }
 
 void Tag::spawn(uint8_t playerId, uint8_t weaponId) {
     if (weaponId == 0x00) {
-        this->weapon = new AK47();
+        weapon = new AK47();
     }
 
     if (playerId == 0x00) {
-        this->player = new Trooper(this->weapon);
+        player = new Trooper(weapon);
     }
 
-    this->init();
+    init();
 }
 
 void Tag::spawn(const char* playerName, const char* weaponName, uint8_t team) {
     if (!strcmp(weaponName, "AK47")) {
-        this->weapon = new AK47();
+        weapon = new AK47();
     }
 
     if (!strcmp(playerName, "Trooper")) {
-        this->player = new Trooper(this->weapon);
-        this->player->setTeam(team);
+        player = new Trooper(weapon);
+        player->setTeam(team);
     }
 
-    this->init();
+    init();
 }
 
 void Tag::init() {
-    this->player->spawn();
+    player->spawn();
     Serial.print("Player hp: ");
-    Serial.println(this->player->getHp());
-    this->tmrpcm.play("AK47.WAV");
-    this->hud.updateHp(this->player->getHp());
-    this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
-    this->hud.updateClass(this->player->getClassName());
-    this->hud.updateWeapon(this->player->getWeaponName());
+    Serial.println(player->getHp());
+    hud.updateHp(player->getHp());
+    hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
+    hud.updateClass(player->getClassName());
+    hud.updateWeapon(player->getWeaponName());
+    audio.playWeapon(player->getWeaponName());
 }
 
 void Tag::fire() {
-    if (this->player->canFire()) {
+    if (player->canFire()) {
         Serial.println("Fire!");
-        ir.shoot(this->player->fire());
-        this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
-        tmrpcm.stopPlayback();
-        tmrpcm.play("SHOT.WAV");
+        ir.shoot(player->fire());
+        hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
+        audio.playFire();
     }
 }
 
 void Tag::reload() {
-    if (this->player->canReload()) {
-        this->player->reload();
-        tmrpcm.stopPlayback();
-        this->tmrpcm.play("RELOAD.WAV");
-        this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+    if (player->canReload()) {
+        player->reload();
+        hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
+        audio.playReload();
     }
 }
 
@@ -80,35 +78,35 @@ void Tag::receiveShot(shot_t* shot) {
 }
 
 void Tag::loop() {
-    this->checkReload();
-    this->checkSkill();
-    this->checkFire();
-    this->checkReceiveFire();
-    this->checkSpawnPoint();
+    checkReload();
+    checkSkill();
+    checkFire();
+    checkReceiveFire();
+    checkSpawnPoint();
 }
 
 
 void Tag::checkReload() {
     if (!digitalRead(RELOAD_PIN)) {
         if (!reloadBtnStatus) {
-            this->reload();
+            reload();
         }
 
-        this->reloadBtnStatus = true;
+        reloadBtnStatus = true;
     } else {
-        this->reloadBtnStatus = false;
+        reloadBtnStatus = false;
     }
 }
 
 void Tag::checkFire() {
     if (!digitalRead(FIRE_PIN)) {
         if (!fireBtnStatus || player->getWeaponType()) {
-            this->fire();
+            fire();
         }
 
-        this->fireBtnStatus = true;
+        fireBtnStatus = true;
     } else {
-        this->fireBtnStatus = false;
+        fireBtnStatus = false;
     }
 }
 
@@ -118,9 +116,9 @@ void Tag::checkSkill() {
             //player->activateSkill();
         }
 
-        this->skillBtnStatus = true;
+        skillBtnStatus = true;
     } else {
-        this->skillBtnStatus = false;
+        skillBtnStatus = false;
     }
 }
 
@@ -135,18 +133,18 @@ void Tag::checkReceiveFire() {
     }
 
     if (previouslyAlive && !player->isAlive()) {
-        tmrpcm.play("DEATH.WAV");
+        audio.playDeath();
     }
 }
 
 void Tag::checkSpawnPoint() {
     if (!digitalRead(SPAWN_PIN)) {
         if (!spawnBtnStatus) {
-            this->init();
+            init();
         }
-        this->spawnBtnStatus = true;
+        spawnBtnStatus = true;
     } else {
-        this->spawnBtnStatus = false;
+        spawnBtnStatus = false;
     }
 }
 

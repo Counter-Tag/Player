@@ -2,15 +2,13 @@
 #define TAG_H
 
 #include <Arduino.h>
-#include <TMRpcm.h>
-#include <SPI.h>
-#include <SD.h>
 #include "Player/Player.h"
 #include "Player/Trooper.h"
 #include "Weapon/Weapon.h"
 #include "Weapon/AK47.h"
 #include "HUD.h"
 #include "IR.h"
+#include "Audio.h"
 #include "common.h"
 
 /**
@@ -41,7 +39,7 @@ private:
     Player* player;
     Weapon* weapon;
     HUD hud;
-    TMRpcm tmrpcm;
+    Audio audio;
     IR ir;
 
     bool reloadBtnStatus;
