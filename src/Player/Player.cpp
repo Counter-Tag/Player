@@ -35,7 +35,9 @@ void Player::receiveShot(shot_t* shot) {
     } else {
         Serial.println("Received enemy shot");
         if (shot->flags & WF_DAMAGE_ENEMIES) {
-            Serial.println("Enemy fire! Dealing ");
+            Serial.print("Enemy fire! Dealing ");
+            Serial.print(shot->damage);
+            Serial.println(" damage.");
             this->changeHp(-shot->damage); 
         } else if (shot->flags & WF_HEAL_ENEMIES) {
             Serial.println("Enemy healing!! Healing damage.");

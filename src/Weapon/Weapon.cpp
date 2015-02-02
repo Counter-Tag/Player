@@ -10,7 +10,7 @@ bool Weapon::canFire() {
 }
 
 bool Weapon::canReload() {
-    return this->magazineAmmo < this->magazineCapacity;
+    return this->ammo > 0 && this->magazineAmmo < this->magazineCapacity;
 }
 
 weapon_shot_t* Weapon::fire() {
