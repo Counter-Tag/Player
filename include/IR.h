@@ -12,13 +12,10 @@ public:
     void interrupt();
     void shoot(const shot_t* shot);
     shot_t* receiveShot();
-    static void timerSetup();
 
     shot_t shot;
 
     static IR* instance;
-    static bool initialized;
-    unsigned long period;
 
 private:
     static const uint16_t MAX_RECEPTION_TIME = 4000;
@@ -35,6 +32,10 @@ private:
     unsigned long lastReceptionTime;
     uint8_t receivedShots[3];
     uint8_t totalShots;
+
+    static bool initialized;
+
+    static void timerSetup();
 };
 
 void ir_interrupt();

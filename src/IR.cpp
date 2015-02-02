@@ -72,9 +72,6 @@ void IR::interrupt() {
 shot_t* IR::receiveShot() {
     bool valid = false;
 
-    //Serial.print(totalShots);
-    //Serial.println(" shots pending.");
-
     if (totalShots >= IR::MIN_SHOTS) {
         shot.damage = totalShots * DAMAGE_PER_PULSE;
         
