@@ -72,7 +72,7 @@ void IR::interrupt() {
 shot_t* IR::receiveShot() {
     bool valid = false;
 
-    if (totalShots >= IR::MIN_SHOTS) {
+    if (totalShots >= IR::MIN_SHOTS && lastReceptionTime + SHOT_TYPES[0] + SHOT_TYPES[2] < micros()) {
         shot.damage = totalShots * DAMAGE_PER_PULSE;
         
         for (uint8_t i = 0; i < 3; i++) {
@@ -86,7 +86,6 @@ shot_t* IR::receiveShot() {
         }
 
         if (valid) {
-            Serial.println();
             Serial.print("Valid shot received team ");
             Serial.println((shot.flags & WF_TEAM) >> 2);
             // Workaround for setting heal flags
