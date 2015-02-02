@@ -62,23 +62,21 @@ void Tag::fire() {
         Serial.println("Fire!");
         ir.shoot(this->player->fire());
         this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
+        tmrpcm.stopPlayback();
+        tmrpcm.play("SHOT.WAV");
     }
 }
 
 void Tag::reload() {
     if (this->player->canReload()) {
         this->player->reload();
+        tmrpcm.stopPlayback();
         this->tmrpcm.play("RELOAD.WAV");
         this->hud.updateAmmo(this->player->getWeaponMagazineAmmo(), this->player->getWeaponAmmo());
     }
 }
 
 void Tag::receiveShot(shot_t* shot) {
-    /*Serial.print("Received shot with  ");
-    Serial.print(shot->damage);
-    Serial.println(" damage");*/
-    this->player->receiveShot(shot);
-    this->hud.updateHp(100 * this->player->getHp() / this->player->getMaxHp());
 }
 
 void Tag::loop() {
@@ -128,17 +126,16 @@ void Tag::checkSkill() {
 
 void Tag::checkReceiveFire() {
     shot_t* shot;
-    static unsigned long lastPeriod = 0;
 
-    if (ir.period != lastPeriod) {
-        lastPeriod = ir.period;
-        Serial.print("Last debug period: ");
-        Serial.println(ir.period);
-    }
+    bool previouslyAlive = player->isAlive();
 
     if ((shot = ir.receiveShot())) {
         player->receiveShot(shot);
         hud.updateHp(player->getHp());
+    }
+
+    if (previouslyAlive && !player->isAlive()) {
+        tmrpcm.play("DEATH.WAV");
     }
 }
 
