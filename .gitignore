@@ -1,1 +1,5 @@
 build*/
+.dropbox
+Tag.sublime-workspace
+*_nogit*
+
