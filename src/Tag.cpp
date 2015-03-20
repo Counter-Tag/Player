@@ -128,7 +128,7 @@ void Tag::checkReceiveFire() {
     bool previouslyAlive = player->isAlive();
 
     if ((shot = ir.receiveShot())) {
-        player->receiveShot(shot);
+        player->receiveShot(*shot);
         hud.updateHp(player->getHp());
     }
 

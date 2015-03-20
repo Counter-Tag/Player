@@ -14,34 +14,24 @@ bool Player::canReload() {
 
 shot_t* Player::fire() {
     memcpy(&this->weapon_shot, this->weapon->fire(), sizeof(weapon_shot_t));
-    this->weapon_shot.flags |= ((this->team << 2) & WF_TEAM);
+    this->weapon_shot.shot |= (this->team << 6) & WF_TEAM;
     this->applyOutModifiers(&this->weapon_shot);
 
     return (shot_t*) &this->weapon_shot;
 }
 
-void Player::receiveShot(shot_t* shot) {
-    this->applyInModifiers(shot);
-    
-    if (((shot->flags & WF_TEAM) >> 2) == this->team) {
-        Serial.println("Received ally shot");
-        if (shot->flags & WF_DAMAGE_ALLIES) {
-            Serial.println("Friendly fire!! Dealing damage.");
-            this->changeHp(-shot->damage);
-        } else if (shot->flags & WF_HEAL_ALLIES) {
-            Serial.println("Friendly healing! Healing damage.");
-            this->changeHp(shot->damage);
+void Player::receiveShot(shot_t shot) {
+    this->applyInModifiers(&shot);
+
+    if (((shot & WF_TEAM) >> 6) == this->team) {
+        if (shot & WF_TARGET_ALLIES) {
+            Serial.println("Received ally shot");
+            this->changeHp(WV_DAMAGE(shot) * (shot & WF_TYPE_HEAL ? 1 : -1));
         }
     } else {
-        Serial.println("Received enemy shot");
-        if (shot->flags & WF_DAMAGE_ENEMIES) {
-            Serial.print("Enemy fire! Dealing ");
-            Serial.print(shot->damage);
-            Serial.println(" damage.");
-            this->changeHp(-shot->damage); 
-        } else if (shot->flags & WF_HEAL_ENEMIES) {
-            Serial.println("Enemy healing!! Healing damage.");
-            this->changeHp(shot->damage);
+        if (shot & WF_TARGET_ENEMIES) {
+            Serial.println("Received enemy shot");
+            this->changeHp(WV_DAMAGE(shot) * (shot & WF_TYPE_HEAL ? 1 : -1)); 
         }
     }
 }

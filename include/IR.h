@@ -2,7 +2,7 @@
 #define IR_H
 
 #include <Arduino.h>
-#include "Weapon/weapon_shot.h"
+#include "Weapon/shot.h"
 #include "common.h"
 
 class IR {
@@ -10,7 +10,7 @@ public:
     IR();
 
     void interrupt();
-    void shoot(const shot_t* shot);
+    void fire(shot_t shot);
     shot_t* receiveShot();
 
     shot_t shot;
@@ -18,22 +18,21 @@ public:
     static IR* instance;
 
 private:
-    static const uint16_t MAX_RECEPTION_TIME = 4000;
+    static const uint16_t MAX_RECEPTION_TIME = 1000;
 
     static const uint16_t LOW_HYSTERESIS = 100;
     static const uint16_t HIGH_HYSTERESIS = 200;
 
     static const uint8_t MIN_SHOTS = 2;
 
-    static const uint16_t SHOT_TYPES[3];
-
-    static const uint8_t DAMAGE_PER_PULSE = 3;
+    static const uint16_t PERIODS[2];
 
     unsigned long lastReceptionTime;
-    uint8_t receivedShots[3];
-    uint8_t totalShots;
+    uint8_t receivedPulses;
+    uint8_t buffer;
 
     static bool initialized;
+
 
     static void timerSetup();
 };

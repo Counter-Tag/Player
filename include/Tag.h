@@ -38,8 +38,8 @@ public:
 private:
     Player* player;
     Weapon* weapon;
-    HUD hud;
     Audio audio;
+    HUD hud;
     IR ir;
 
     bool reloadBtnStatus;

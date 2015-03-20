@@ -2,7 +2,7 @@
 #define WEAPON_H
 
 #include <Arduino.h>
-#include "weapon_shot.h"
+#include "shot.h"
 
 class Weapon {
 public:

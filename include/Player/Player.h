@@ -16,7 +16,7 @@ public:
     virtual void reload();
     virtual void refill();
 
-    virtual void receiveShot(shot_t* shot);
+    virtual void receiveShot(shot_t shot);
 
     virtual void spawn();
 
