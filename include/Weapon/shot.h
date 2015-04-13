@@ -8,6 +8,8 @@ typedef struct weapon_shot {
     uint8_t type;
 } weapon_shot_t;
 
+#define NULL_SHOT (shot_t) 0xffff
+
 const uint8_t SHOT_REAL_SIZE = 7;
 
 // Shot Flags

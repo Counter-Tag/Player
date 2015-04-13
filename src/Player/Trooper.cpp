@@ -6,8 +6,8 @@ Trooper::Trooper(Weapon* weapon) : Player::Player(weapon) {
 
     this->initInModifiers(0);
 
-    this->initOutModifiers(1);
-    this->outModifiers[0] = Trooper::bonusWeaponModifier;
+    this->initOutModifiers(0);
+    //this->outModifiers[0] = Trooper::bonusWeaponModifier;
 
     this->name = "Trooper";
 }

@@ -63,7 +63,9 @@ void Player::changeHp(int8_t hp) {
 }
 
 bool Player::isAlive() {
-    return this->hp != 0;
+    //return this->hp != 0;
+    // Debugging
+    return true;
 }
 
 String Player::getClassName() {

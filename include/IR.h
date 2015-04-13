@@ -11,30 +11,35 @@ public:
 
     void interrupt();
     void fire(shot_t shot);
-    shot_t* receiveShot();
+    shot_t getShot();
 
     shot_t shot;
 
     static IR* instance;
 
 private:
+    inline void reset();
+
     static const uint16_t MAX_RECEPTION_TIME = 1000;
 
-    static const uint16_t LOW_HYSTERESIS = 100;
-    static const uint16_t HIGH_HYSTERESIS = 200;
+    static const uint16_t LOW_HYSTERESIS = 50;
+    static const uint16_t HIGH_HYSTERESIS = 100;
 
     static const uint8_t MIN_SHOTS = 2;
 
+    static const uint8_t START_BIT = 8 * sizeof(shot_t) - 1;
+
     static const uint16_t PERIODS[2];
 
-    unsigned long lastReceptionTime;
-    uint8_t receivedPulses;
-    uint8_t buffer;
+    uint64_t lastReceptionTime;
+    uint16_t buffer;
+    uint8_t currentBit;
+    shot_t externalBuffer;
 
     static bool initialized;
 
 
-    static void timerSetup();
+    static inline void timerSetup();
 };
 
 void ir_interrupt();

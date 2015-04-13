@@ -33,7 +33,6 @@ public:
     void init();
     void reload();
     void fire();
-    void receiveShot(shot_t* shot);
 
 private:
     Player* player;

@@ -60,7 +60,7 @@ void Tag::init() {
 void Tag::fire() {
     if (player->canFire()) {
         Serial.println("Fire!");
-        ir.shoot(player->fire());
+        ir.fire(*player->fire());
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
         audio.playFire();
     }
@@ -74,8 +74,6 @@ void Tag::reload() {
     }
 }
 
-void Tag::receiveShot(shot_t* shot) {
-}
 
 void Tag::loop() {
     checkReload();
@@ -83,6 +81,7 @@ void Tag::loop() {
     checkFire();
     checkReceiveFire();
     checkSpawnPoint();
+    delay(5);
 }
 
 
@@ -123,17 +122,20 @@ void Tag::checkSkill() {
 }
 
 void Tag::checkReceiveFire() {
-    shot_t* shot;
+    shot_t shot;
 
-    bool previouslyAlive = player->isAlive();
+    if (player->isAlive()) {
+        shot = ir.getShot();
+        
+        if (shot != NULL_SHOT) {
+            Serial.println((uint8_t) shot, BIN);
+            player->receiveShot(shot);
+            hud.updateHp(player->getHp());
+        }
 
-    if ((shot = ir.receiveShot())) {
-        player->receiveShot(*shot);
-        hud.updateHp(player->getHp());
-    }
-
-    if (previouslyAlive && !player->isAlive()) {
-        audio.playDeath();
+        if (!player->isAlive()) {
+            audio.playDeath();
+        }
     }
 }
 

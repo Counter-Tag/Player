@@ -13,14 +13,9 @@ IR::IR() {
     // TODO: Try NOINLINE macro to call external function from constructor.
 
     pinMode(SEND_PIN, OUTPUT);
-    
-    lastReceptionTime = 0;
 
-    receivedShots[0] = 0;
-    receivedShots[1] = 0;
-    receivedShots[2] = 0;
-
-    totalShots = 0;
+    externalBuffer = NULL_SHOT;
+    this->reset();
 
     IR::instance = this;
 }
@@ -28,70 +23,79 @@ IR::IR() {
 void IR::fire(shot_t shot) {
     IR::timerSetup();
 
-    // We send one pulse per 3 damage points.
-    for (int i = 0; i < SHOT_REAL_SIZE; i++) {
+    for (int i = START_BIT; i > 0; i--) {
         // For each pulse, we send the IR carrier for a fixed length (IR::SHOT_TYPES[0]),
         // and then wait for a variable amount of time, depending on the shot type.
         TCCR2A |= _BV(COM2B1);
-        delayMicroseconds(IR::SHOT_TYPES[0]);
+        delayMicroseconds(IR::PERIODS[0]);
 
         TCCR2A &= ~_BV(COM2B1);
-        delayMicroseconds(IR::SHOT_TYPES[0x01 & (shot << i)]);
+        delayMicroseconds(IR::PERIODS[1 & (shot >> i)]);
     }
+
+    // Turn LED on once more to read last bit, and shut down.
+    TCCR2A |= _BV(COM2B1);
+    delayMicroseconds(IR::PERIODS[0]);
+
+    TCCR2A &= ~_BV(COM2B1);
 }
 
 void IR::interrupt() {
-    // TODO
-}
+    const uint64_t time = micros();
+    uint16_t period = time - lastReceptionTime - IR::PERIODS[0];
 
-shot_t* IR::receiveShot() {
-    bool valid = false;
-
-    if (totalShots >= IR::MIN_SHOTS && lastReceptionTime + SHOT_TYPES[0] + SHOT_TYPES[2] < micros()) {
-        //shot.damage = totalShots * DAMAGE_PER_PULSE;
-        
-        for (uint8_t i = 0; i < 3; i++) {
-            // Check if we have received more than 60% shots of one type
-            if (((float) receivedShots[i] / (float) totalShots) >= 0.6f) {
-                //shot.flags = (i << 2) & WF_TEAM;
-                //shot.flags |= WF_DAMAGE_ENEMIES;
-                valid = true;
-                break;
-            }
-        }
-
-        if (valid) {
-            //Serial.print("Valid shot received team ");
-            //Serial.println((shot.flags & WF_TEAM) >> 2);
-
-            // TODO: Remove.
-            //shot.flags = _BV(3) | WF_DAMAGE_ENEMIES;
-
-            receivedShots[0] = 0;
-            receivedShots[1] = 0;
-            receivedShots[2] = 0;
-            totalShots = 0;
-
-            return &(shot);
-        } else {
-            return NULL;
-        }
+    if (period > 2 * IR::PERIODS[1]) {
+        reset();
     } else {
-        return NULL;
+        lastReceptionTime = time;
+
+        if (period > IR::PERIODS[0] - IR::LOW_HYSTERESIS && period < IR::PERIODS[0] + IR::HIGH_HYSTERESIS) {
+            currentBit--;
+        } else if (period > IR::PERIODS[1] - IR::LOW_HYSTERESIS && period < IR::PERIODS[1] + IR::HIGH_HYSTERESIS) {
+            buffer |= _BV(currentBit--);
+        } else {
+            reset();
+            return;
+        }
+
+        if (currentBit == 0) {
+            externalBuffer = (shot_t) buffer;
+            reset();
+        }
     }
 }
 
-void IR::timerSetup() {
+shot_t IR::getShot() {
+    shot_t shot;
+
+    if (micros() - lastReceptionTime > 2 * IR::PERIODS[1]) {
+        shot = (shot_t) externalBuffer;
+        externalBuffer = NULL_SHOT;
+        return shot;
+    } else {
+        return NULL_SHOT;
+    }
+}
+
+inline void IR::timerSetup() {
     if (!initialized) {
         TCCR2A = _BV(WGM21) | _BV(WGM20);
         //       Mode         8 Prescaler
         TCCR2B = _BV(WGM22) | _BV(CS21);
-        OCR2A = 51; // Stop value. For 8 prescaler it equals 52.6
-        OCR2B = 26; // 52.6 / 2 = 26.3 for 50% duty.
+        OCR2A = 52; // Stop value. For 8 prescaler it equals 52.6
+        OCR2B = 17; // 52.6 / 2 = 26.3 for 50% duty, 52.6 / 3 = 17.533.
         //TCCR2A |= _BV(COM2B1);
 
         initialized = true;
     }
+}
+
+inline void IR::reset() {
+    // Reset counters and buffers, ladies and gentlemen.
+    //memset(&buffer, 0, sizeof(buffer));
+    buffer = 0;
+    currentBit = START_BIT;
+    lastReceptionTime = micros();
 }
 
 void ir_interrupt() {
