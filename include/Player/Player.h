@@ -22,6 +22,8 @@ public:
 
     virtual bool isAlive();
 
+    virtual void anacron();
+
     String getClassName();
 
     uint8_t getMaxHp();

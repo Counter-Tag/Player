@@ -15,6 +15,7 @@ public:
     virtual void reload();
     virtual void refill();
 
+    virtual void anacron();
 
     int getCapacity();
     void setCapacity(int capacity);

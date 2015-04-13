@@ -84,3 +84,5 @@ uint8_t Weapon::getType() {
 String Weapon::getName() {
     return this->name;
 }
+
+void Weapon::anacron() {}

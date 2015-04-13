@@ -138,3 +138,5 @@ void Player::initInModifiers(uint8_t no) {
         this->inModifiers = (void(**)(shot_t*)) malloc(sizeof(void(*)(shot_t*)) * this->inModifiersSize);
     }
 }
+
+void Player::anacron() {}
