@@ -4,8 +4,8 @@ Audio::Audio() : tmrpcm() {
     tmrpcm.speakerPin = SPKR_PIN;
 }
 
-void Audio::init() {
-    initialized = SD.begin(SDCS_PIN);
+int Audio::init() {
+    return (initialized = SD.begin(SDCS_PIN));
 }
 
 void Audio::play(const char* track) {
@@ -29,5 +29,6 @@ void Audio::playDeath() {
 }
 
 void Audio::playFire() {
+    Serial.println("Fire playing!");
     play("FIRE.WAV");
 }

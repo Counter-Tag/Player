@@ -10,7 +10,7 @@ class Audio {
 public:
     Audio();
 
-    void init();
+    int init();
 
     void playWeapon(String weapon);
     void playFire();
