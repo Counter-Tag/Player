@@ -1,7 +1,6 @@
 #include "../../include/Weapon/AK47.h"
 
 AK47::AK47() {
-    this->name = "AK47";
     this->cooldown = 333;
     this->reloadCooldown = 2000;
     
@@ -13,4 +12,6 @@ AK47::AK47() {
     this->shot = (weapon_shot_t) {_BV(WV_TARGET_ENEMIES) | _BV(WV_TARGET_ALLIES) | WV_DAMAGE_10, 0x00};
 
     this->type = Weapon::TYPE_AUTO;
+
+    strcpy(this->name, "AK47");
 }

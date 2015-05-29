@@ -32,11 +32,11 @@ public:
     virtual uint8_t getRange();
 
     uint8_t getType();
-    String getName();
+    const char* getName();
 
     weapon_shot_t  shot;
 
-    String name;
+    char name[8];
 
     static const uint8_t TYPE_SEMI = 0;
     static const uint8_t TYPE_AUTO = 1;
@@ -57,6 +57,8 @@ protected:
     uint8_t magazineCapacity;
 
     uint8_t type;
+
+    static const uint8_t COOLDOWN_RANDOM_PERCENT = 10;
 };
 
 #endif

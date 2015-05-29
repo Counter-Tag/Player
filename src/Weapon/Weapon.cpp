@@ -14,7 +14,7 @@ bool Weapon::canReload() {
 }
 
 weapon_shot_t* Weapon::fire() {
-    this->nextFire = millis() + this->cooldown;
+    this->nextFire = millis() + (int) this->cooldown * (1 + (float) (rand() % (COOLDOWN_RANDOM_PERCENT * 2) - COOLDOWN_RANDOM_PERCENT) / 100);
     
     if (this->magazineAmmo > 0) {
         --this->magazineAmmo;
@@ -81,7 +81,7 @@ uint8_t Weapon::getType() {
     return this->type;
 }
 
-String Weapon::getName() {
+const char* Weapon::getName() {
     return this->name;
 }
 

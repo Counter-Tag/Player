@@ -24,7 +24,7 @@ public:
 
     virtual void anacron();
 
-    String getClassName();
+    const char* getClassName();
 
     uint8_t getMaxHp();
     uint8_t getHp();
@@ -36,7 +36,7 @@ public:
     uint8_t getWeaponAmmo();
     uint8_t getWeaponMagazineAmmo();
     uint8_t getWeaponType();
-    String getWeaponName();
+    const char* getWeaponName();
 
     uint8_t getTeam();
     void setTeam(uint8_t team);
@@ -63,7 +63,9 @@ protected:
     uint8_t outModifiersSize;
     uint8_t inModifiersSize;
 
-    String name;
+    char name[8];
+
+    static const uint8_t HP_RANDOM_PERCENT = 20;
 };
 
 #endif

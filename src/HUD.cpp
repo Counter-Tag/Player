@@ -37,18 +37,14 @@ void HUD::updateAmmo(int magazine, int total) {
   lcd.print(this->buf);
 }
 
-void HUD::updateWeapon(String weapon) {
-  sprintf(this->buf, "%s", weapon.c_str());
-
+void HUD::updateWeapon(const char* weapon) {
   lcd.setCursor(8, 1);
-  lcd.print(this->buf);
+  lcd.print(weapon);
 }
 
-void HUD::updateClass(String cls) {
-  sprintf(this->buf, "%s", cls.c_str());
-
+void HUD::updateClass(const char* cls) {
   lcd.setCursor(0, 1);
-  lcd.print(this->buf);
+  lcd.print(cls);
 }
 
 uint8_t HUD::cols = 16;

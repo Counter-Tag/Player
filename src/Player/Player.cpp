@@ -58,7 +58,7 @@ void Player::changeHp(int8_t hp) {
     } else if (this->hp + hp < 0) {
         this->hp = 0;
     } else {
-        this->hp += hp;
+        this->hp += hp * (1 + (float) (rand() % (HP_RANDOM_PERCENT * 2) - HP_RANDOM_PERCENT) / 100);
     }
 }
 
@@ -68,7 +68,7 @@ bool Player::isAlive() {
     return true;
 }
 
-String Player::getClassName() {
+const char* Player::getClassName() {
     return this->name;
 }
 
@@ -96,7 +96,7 @@ uint8_t Player::getWeaponType() {
     return this->weapon->getType();
 }
 
-String Player::getWeaponName() {
+const char* Player::getWeaponName() {
     return this->weapon->getName();
 }
 
