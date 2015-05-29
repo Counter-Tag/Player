@@ -34,6 +34,8 @@ public:
     void reload();
     void fire();
 
+    inline void seedRNG();
+
 private:
     Player* player;
     Weapon* weapon;

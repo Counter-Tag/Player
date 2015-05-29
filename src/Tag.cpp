@@ -54,12 +54,20 @@ void Tag::init() {
     hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
     hud.updateClass(player->getClassName());
     hud.updateWeapon(player->getWeaponName());
+
+    if (audio.init()) {
+        Serial.println("Audio initialized.");
+    } else {
+        Serial.println("Error initializing audio.");
+    }
     audio.playWeapon(player->getWeaponName());
 }
 
 void Tag::fire() {
+    seedRNG();
     if (player->canFire()) {
         Serial.println("Fire!");
+        audio.stop();
         ir.fire(*player->fire());
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
         audio.playFire();
@@ -67,6 +75,7 @@ void Tag::fire() {
 }
 
 void Tag::reload() {
+    seedRNG();
     if (player->canReload()) {
         player->reload();
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
@@ -81,7 +90,6 @@ void Tag::loop() {
     checkFire();
     checkReceiveFire();
     checkSpawnPoint();
-    delay(5);
 }
 
 
@@ -129,6 +137,7 @@ void Tag::checkReceiveFire() {
         
         if (shot != NULL_SHOT) {
             Serial.println((uint8_t) shot, BIN);
+            seedRNG();
             player->receiveShot(shot);
             hud.updateHp(player->getHp());
         }
@@ -148,5 +157,9 @@ void Tag::checkSpawnPoint() {
     } else {
         spawnBtnStatus = false;
     }
+}
+
+inline void Tag::seedRNG() {
+    srand(millis());
 }
 
