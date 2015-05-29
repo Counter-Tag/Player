@@ -16,6 +16,7 @@ public:
     void playFire();
     void playReload();
     void playDeath();
+    void stop();
 
 private:
     void play(const char* track);
