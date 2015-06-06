@@ -16,4 +16,5 @@ LOCAL_CPP_SRCS = $(foreach dir,$(SOURCE_FOLDERS),$(wildcard $(dir)/*.cpp))
 
 #OPTIMIZATION_LEVEL = 3
 
-include /home/roobre/Devel/Arduino-Makefile/Arduino.mk
+#include /home/roobre/Devel/Arduino-Makefile/Arduino.mk
+include /usr/share/arduino/Arduino.mk
