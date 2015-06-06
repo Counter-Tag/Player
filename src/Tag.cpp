@@ -59,7 +59,7 @@ void Tag::init() {
 void Tag::fire() {
     seedRNG();
     if (player->canFire()) {
-        print_debug("[CORE] Player firing.");
+        print_debug("[CORE] Firing.");
         audio.stop();
         ir.fire(*player->fire());
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
@@ -70,7 +70,7 @@ void Tag::fire() {
 void Tag::reload() {
     seedRNG();
     if (player->canReload()) {
-        print_debug("[CORE] Player reloading.");
+        print_debug("[CORE] Reloading.");
         player->reload();
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
         audio.playReload();
@@ -130,7 +130,7 @@ void Tag::checkReceiveFire() {
 
     if (player->isAlive()) {
         if (shot != NULL_SHOT) {
-            print_event("[CORE] Received shot: %x.", (uint8_t) shot);
+            print_event("[CORE] Received shot '%x'.", (uint8_t) shot);
             seedRNG();
             player->receiveShot(shot);
             hud.updateHp(player->getHp());

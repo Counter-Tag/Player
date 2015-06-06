@@ -40,7 +40,7 @@ void Weapon::reload() {
 
         this->nextFire = millis() + this->reloadCooldown;
 
-        print_event("[WEAPON] Weapon reloaded.", this->shot);
+        print_debug("[WEAPON] Weapon reloaded.", this->shot);
     }
 }
 

@@ -39,7 +39,7 @@ void Audio::stop() {
 
 void Audio::play(const char* track) {
     if (initialized) {
-        print_debug("[AUDIO]: Playing '%s'.", track);
+        print_event("[AUDIO] Playing '%s'.", track);
         tmrpcm.play((char*) track);
     }
 }

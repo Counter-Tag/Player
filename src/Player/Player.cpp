@@ -25,7 +25,7 @@ shot_t* Player::fire() {
 void Player::receiveShot(shot_t shot) {
     this->applyInModifiers(&shot);
 
-    print_debug("[PLAYER] Player received shot '%x'.");
+    print_debug("[PLAYER] Received shot '%x'.");
 
     if (((shot & WF_TEAM) >> 6) == this->team) {
         print_debug("[PLAYER] Shot is friendly.");
@@ -67,7 +67,7 @@ void Player::changeHp(int8_t hp) {
         this->hp += hp * (1 + (float) (rand() % (HP_RANDOM_PERCENT * 2) - HP_RANDOM_PERCENT) / 100);
     }
 
-    print_event("[PLAYER] Player HP changed to %u", this->hp);
+    print_event("[PLAYER] HP changed to %u", this->hp);
 }
 
 bool Player::isAlive() {

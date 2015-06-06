@@ -8,7 +8,7 @@
 //  1: Error
 //  2: Events
 //  3: Info
-#define CT_DEBUG 2
+#define CT_DEBUG 1
 
 // Baud rate
 const int BAUDRATE = 9600;
