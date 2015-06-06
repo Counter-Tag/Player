@@ -4,14 +4,12 @@ Tag::Tag() : audio(), hud(), ir() {
     pinMode(RELOAD_PIN, INPUT);
     pinMode(FIRE_PIN, INPUT);
     pinMode(SKILL_PIN, INPUT);
-    pinMode(SPAWN_PIN, INPUT);
     pinMode(TEAM_PIN, INPUT);
     pinMode(POT_SELECT_PIN, OUTPUT);
 
     digitalWrite(RELOAD_PIN, HIGH);
     digitalWrite(FIRE_PIN, HIGH);
     digitalWrite(SKILL_PIN, HIGH);
-    digitalWrite(SPAWN_PIN, HIGH);
     digitalWrite(TEAM_PIN, HIGH);
     digitalWrite(POT_SELECT_PIN, HIGH);
 
@@ -48,25 +46,20 @@ void Tag::spawn(const char* playerName, const char* weaponName, uint8_t team) {
 
 void Tag::init() {
     player->spawn();
-    Serial.print("Player hp: ");
-    Serial.println(player->getHp());
+    print_event("[CORE] Spawned %s with an %s.", player->getClassName(), player->getWeaponName());
     hud.updateHp(player->getHp());
     hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
     hud.updateClass(player->getClassName());
     hud.updateWeapon(player->getWeaponName());
 
-    if (audio.init()) {
-        Serial.println("Audio initialized.");
-    } else {
-        Serial.println("Error initializing audio.");
-    }
+    audio.init();
     audio.playWeapon(player->getWeaponName());
 }
 
 void Tag::fire() {
     seedRNG();
     if (player->canFire()) {
-        Serial.println("Fire!");
+        print_debug("[CORE] Player firing.");
         audio.stop();
         ir.fire(*player->fire());
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
@@ -77,6 +70,7 @@ void Tag::fire() {
 void Tag::reload() {
     seedRNG();
     if (player->canReload()) {
+        print_debug("[CORE] Player reloading.");
         player->reload();
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
         audio.playReload();
@@ -89,13 +83,13 @@ void Tag::loop() {
     checkSkill();
     checkFire();
     checkReceiveFire();
-    checkSpawnPoint();
 }
 
 
 void Tag::checkReload() {
     if (!digitalRead(RELOAD_PIN)) {
         if (!reloadBtnStatus) {
+            print_debug("[CORE] Reload button pressed.");
             reload();
         }
 
@@ -108,6 +102,7 @@ void Tag::checkReload() {
 void Tag::checkFire() {
     if (!digitalRead(FIRE_PIN)) {
         if (!fireBtnStatus || player->getWeaponType()) {
+            print_debug("[CORE] Fire button pressed.");
             fire();
         }
 
@@ -120,6 +115,7 @@ void Tag::checkFire() {
 void Tag::checkSkill() {
     if (!digitalRead(SKILL_PIN)) {
         if (!skillBtnStatus) {
+            print_debug("[CORE] Skill button pressed.");
             //player->activateSkill();
         }
 
@@ -130,13 +126,11 @@ void Tag::checkSkill() {
 }
 
 void Tag::checkReceiveFire() {
-    shot_t shot;
+    shot_t shot = ir.getShot();
 
     if (player->isAlive()) {
-        shot = ir.getShot();
-        
         if (shot != NULL_SHOT) {
-            Serial.println((uint8_t) shot, BIN);
+            print_event("[CORE] Received shot: %x.", (uint8_t) shot);
             seedRNG();
             player->receiveShot(shot);
             hud.updateHp(player->getHp());
@@ -148,18 +142,7 @@ void Tag::checkReceiveFire() {
     }
 }
 
-void Tag::checkSpawnPoint() {
-    if (!digitalRead(SPAWN_PIN)) {
-        if (!spawnBtnStatus) {
-            init();
-        }
-        spawnBtnStatus = true;
-    } else {
-        spawnBtnStatus = false;
-    }
-}
-
-inline void Tag::seedRNG() {
+void Tag::seedRNG() {
+    print_debug("[CORE] Seeding RNG with %lu.", millis());
     srand(millis());
 }
-

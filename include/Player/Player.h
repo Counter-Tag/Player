@@ -2,7 +2,7 @@
 #define PLAYER_H
 
 #include <Arduino.h>
-
+#include "../Debug.h"
 #include "../Weapon/Weapon.h"
 
 class Player {
@@ -63,7 +63,7 @@ protected:
     uint8_t outModifiersSize;
     uint8_t inModifiersSize;
 
-    char name[8];
+    char name[16];
 
     static const uint8_t HP_RANDOM_PERCENT = 20;
 };

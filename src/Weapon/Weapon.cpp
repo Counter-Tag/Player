@@ -20,6 +20,8 @@ weapon_shot_t* Weapon::fire() {
         --this->magazineAmmo;
     }
 
+    print_event("[WEAPON] Firing %x.", this->shot);
+
     return &this->shot;
 }
 
@@ -37,6 +39,8 @@ void Weapon::reload() {
         this->magazineAmmo = swap;
 
         this->nextFire = millis() + this->reloadCooldown;
+
+        print_event("[WEAPON] Weapon reloaded.", this->shot);
     }
 }
 

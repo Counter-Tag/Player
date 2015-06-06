@@ -2,7 +2,8 @@
 #define HUD_H
 
 #include <LiquidCrystal.h>
-#include "common.h"
+#include "configuration.h"
+#include "Debug.h"
 
 class HUD {
 public:

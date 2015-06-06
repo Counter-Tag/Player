@@ -5,29 +5,31 @@ Audio::Audio() : tmrpcm() {
 }
 
 int Audio::init() {
-    return (initialized = SD.begin(SDCS_PIN));
+    initialized = SD.begin(SDCS_PIN);
+
+    if (initialized) {
+        print_debug("[AUDIO] Audio module initialized.");
+    } else {
+        print_error("[AUDIO] Error initializing audio.");
+    }
+
+    return initialized;
 }
 
 void Audio::playWeapon(String weapon) {
     weapon += ".WAV";
-    Serial.print("[AUDIO]: ");
-    Serial.print(weapon);
-    Serial.println(" playing.");
     play(weapon.c_str());
 }
 
 void Audio::playReload() {
-    Serial.println("[AUDIO]: Reload playing.");
     play("RELOAD.WAV");
 }
 
 void Audio::playDeath() {
-    Serial.println("[AUDIO]: Death playing.");
     play("DEATH.WAV");
 }
 
 void Audio::playFire() {
-    Serial.println("[AUDIO]: Fire playing.");
     play("SHOT.WAV");
 }
 
@@ -37,6 +39,7 @@ void Audio::stop() {
 
 void Audio::play(const char* track) {
     if (initialized) {
+        print_debug("[AUDIO]: Playing '%s'.", track);
         tmrpcm.play((char*) track);
     }
 }

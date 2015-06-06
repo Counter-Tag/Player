@@ -2,6 +2,8 @@
 #define TAG_H
 
 #include <Arduino.h>
+#include "configuration.h"
+#include "Debug.h"
 #include "Player/Player.h"
 #include "Player/Trooper.h"
 #include "Weapon/Weapon.h"
@@ -9,7 +11,6 @@
 #include "HUD.h"
 #include "IR.h"
 #include "Audio.h"
-#include "common.h"
 
 /**
  * @brief Glue code for HW and logic
@@ -26,7 +27,6 @@ public:
     void checkSkill();
     void checkFire();
     void checkReceiveFire();
-    void checkSpawnPoint();
 
     void spawn(uint8_t playerId, uint8_t weaponId);
     void spawn(const char* playerName, const char* weaponName, uint8_t team);
@@ -34,7 +34,7 @@ public:
     void reload();
     void fire();
 
-    inline void seedRNG();
+    static void seedRNG();
 
 private:
     Player* player;

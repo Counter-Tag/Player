@@ -17,20 +17,26 @@ shot_t* Player::fire() {
     this->weapon_shot.shot |= (this->team << 6) & WF_TEAM;
     this->applyOutModifiers(&this->weapon_shot);
 
+    print_event("[PLAYER] Firing %x", this->weapon_shot);
+
     return (shot_t*) &this->weapon_shot;
 }
 
 void Player::receiveShot(shot_t shot) {
     this->applyInModifiers(&shot);
 
+    print_debug("[PLAYER] Player received shot '%x'.");
+
     if (((shot & WF_TEAM) >> 6) == this->team) {
+        print_debug("[PLAYER] Shot is friendly.");
         if (shot & WF_TARGET_ALLIES) {
-            Serial.println("Received ally shot");
+            print_debug("[PLAYER] Shot has friendly-fire flag.");
             this->changeHp(WV_DAMAGE(shot) * (shot & WF_TYPE_HEAL ? 1 : -1));
         }
     } else {
+        print_debug("[PLAYER] Shot is hostile.");
         if (shot & WF_TARGET_ENEMIES) {
-            Serial.println("Received enemy shot");
+            print_debug("[PLAYER] Shot has holstile-fire flag.");
             this->changeHp(WV_DAMAGE(shot) * (shot & WF_TYPE_HEAL ? 1 : -1)); 
         }
     }
@@ -60,12 +66,14 @@ void Player::changeHp(int8_t hp) {
     } else {
         this->hp += hp * (1 + (float) (rand() % (HP_RANDOM_PERCENT * 2) - HP_RANDOM_PERCENT) / 100);
     }
+
+    print_event("[PLAYER] Player HP changed to %u", this->hp);
 }
 
 bool Player::isAlive() {
-    //return this->hp != 0;
+    return this->hp != 0;
     // Debugging
-    return true;
+    //return true;
 }
 
 const char* Player::getClassName() {

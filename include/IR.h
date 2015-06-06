@@ -2,8 +2,9 @@
 #define IR_H
 
 #include <Arduino.h>
+#include "Debug.h"
+#include "configuration.h"
 #include "Weapon/shot.h"
-#include "common.h"
 
 class IR {
 public:

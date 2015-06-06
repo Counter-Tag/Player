@@ -4,7 +4,8 @@
 #include <TMRpcm.h>
 #include <SPI.h>
 #include <SD.h>
-#include "common.h"
+#include "configuration.h"
+#include "Debug.h"
 
 class Audio {
 public:

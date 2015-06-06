@@ -2,6 +2,9 @@
 #define WEAPON_H
 
 #include <Arduino.h>
+#include <string.h>
+#include <stdint.h>
+#include "../Debug.h"
 #include "shot.h"
 
 class Weapon {
@@ -36,7 +39,7 @@ public:
 
     weapon_shot_t  shot;
 
-    char name[8];
+    char name[16];
 
     static const uint8_t TYPE_SEMI = 0;
     static const uint8_t TYPE_AUTO = 1;
