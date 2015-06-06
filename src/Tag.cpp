@@ -45,6 +45,8 @@ void Tag::spawn(const char* playerName, const char* weaponName, uint8_t team) {
 }
 
 void Tag::init() {
+    ContextProvider::set("Weapon", weapon);
+    ContextProvider::set("Player", player);
     player->spawn();
     print_event("[CORE] Spawned %s with an %s.", player->getClassName(), player->getWeaponName());
     hud.updateHp(player->getHp());
@@ -52,7 +54,6 @@ void Tag::init() {
     hud.updateClass(player->getClassName());
     hud.updateWeapon(player->getWeaponName());
 
-    audio.init();
     audio.playWeapon(player->getWeaponName());
 }
 

@@ -6,12 +6,11 @@
 #include <SD.h>
 #include "configuration.h"
 #include "Debug.h"
+#include "ContextProvider.h"
 
 class Audio {
 public:
     Audio();
-
-    int init();
 
     void playWeapon(String weapon);
     void playFire();

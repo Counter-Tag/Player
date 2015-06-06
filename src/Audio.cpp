@@ -2,9 +2,9 @@
 
 Audio::Audio() : tmrpcm() {
     tmrpcm.speakerPin = SPKR_PIN;
-}
 
-int Audio::init() {
+    ContextProvider::set("Audio", this);
+
     initialized = SD.begin(SDCS_PIN);
 
     if (initialized) {
@@ -12,8 +12,6 @@ int Audio::init() {
     } else {
         print_error("[AUDIO] Error initializing audio.");
     }
-
-    return initialized;
 }
 
 void Audio::playWeapon(String weapon) {

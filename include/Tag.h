@@ -11,6 +11,7 @@
 #include "HUD.h"
 #include "IR.h"
 #include "Audio.h"
+#include "ContextProvider.h"
 
 /**
  * @brief Glue code for HW and logic

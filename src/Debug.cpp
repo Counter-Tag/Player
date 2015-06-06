@@ -13,6 +13,7 @@ void _debug_print(uint8_t level, const char* msg, ...) {
     memmove(debugMsg + 8, debugMsg, strlen(debugMsg) + 1);
     memcpy(debugMsg, codes[level - 1], 7);
     debugMsg[7] = ' ';
+
     strcat(debugMsg, "\r\n");
     Serial.write(debugMsg);
 

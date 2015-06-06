@@ -10,19 +10,24 @@ IR::IR() {
 
     attachInterrupt(INTR_PIN, ir_interrupt, FALLING);
 
-    // TODO: Try NOINLINE macro to call external function from constructor.
-
     pinMode(SEND_PIN, OUTPUT);
 
     externalBuffer = NULL_SHOT;
     this->reset();
 
     IR::instance = this;
+
+    TCCR2A = _BV(WGM21) | _BV(WGM20);
+    //       Mode         8 Prescaler
+    TCCR2B = _BV(WGM22) | _BV(CS21);
+    OCR2A = 52; // Stop value. For 8 prescaler it equals 52.6
+    OCR2B = 17; // 52.6 / 2 = 26.3 for 50% duty, 52.6 / 3 = 17.533.
+    //TCCR2A |= _BV(COM2B1);
+
+    ContextProvider::set("IR", this);
 }
 
 void IR::fire(shot_t shot) {
-    IR::timerSetup();
-
     for (int i = START_BIT; i > 0; i--) {
         // For each pulse, we send the IR carrier for a fixed length (IR::SHOT_TYPES[0]),
         // and then wait for a variable amount of time, depending on the shot type.
@@ -74,19 +79,6 @@ shot_t IR::getShot() {
         return shot;
     } else {
         return NULL_SHOT;
-    }
-}
-
-inline void IR::timerSetup() {
-    if (!initialized) {
-        TCCR2A = _BV(WGM21) | _BV(WGM20);
-        //       Mode         8 Prescaler
-        TCCR2B = _BV(WGM22) | _BV(CS21);
-        OCR2A = 52; // Stop value. For 8 prescaler it equals 52.6
-        OCR2B = 17; // 52.6 / 2 = 26.3 for 50% duty, 52.6 / 3 = 17.533.
-        //TCCR2A |= _BV(COM2B1);
-
-        initialized = true;
     }
 }
 

@@ -2,8 +2,9 @@
 #define IR_H
 
 #include <Arduino.h>
-#include "Debug.h"
 #include "configuration.h"
+#include "Debug.h"
+#include "ContextProvider.h"
 #include "Weapon/shot.h"
 
 class IR {
@@ -38,9 +39,6 @@ private:
     shot_t externalBuffer;
 
     static bool initialized;
-
-
-    static inline void timerSetup();
 };
 
 void ir_interrupt();
