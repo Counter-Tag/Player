@@ -6,8 +6,6 @@ HUD::HUD() : lcd(DISPLAY_PIN_RS, DISPLAY_PIN_E, DISPLAY_PIN_D4, DISPLAY_PIN_D5, 
     this->lcd.createChar(2, HUD::skull);
     this->lcd.begin(HUD::cols, HUD::rows = 2);
 
-    ContextProvider::set("HUD", this);
-
     lcd.setCursor(0, 0);
     lcd.write((uint8_t) 0);
     lcd.write(':');

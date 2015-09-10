@@ -14,10 +14,10 @@ bool Player::canReload() {
 
 shot_t* Player::fire() {
     memcpy(&this->weapon_shot, this->weapon->fire(), sizeof(weapon_shot_t));
-    this->weapon_shot.shot |= (this->team << 6) & WF_TEAM;
+    this->weapon_shot.shot |= (this->team << WS_TEAM) & WF_TEAM;
     this->applyOutModifiers(&this->weapon_shot);
 
-    print_event("[PLAYER] Firing %x", this->weapon_shot);
+    print_event("[PLAYER] Firing 0x%x", this->weapon_shot);
 
     return (shot_t*) &this->weapon_shot;
 }
@@ -25,19 +25,20 @@ shot_t* Player::fire() {
 void Player::receiveShot(shot_t shot) {
     this->applyInModifiers(&shot);
 
-    print_debug("[PLAYER] Received shot '%x'.");
+    print_event("[PLAYER] Received shot 0x%x.", (uint8_t) shot);
+    int8_t damage = WV_DAMAGE(shot) * (shot & WF_TYPE_HEAL ? 1 : -1);
 
-    if (((shot & WF_TEAM) >> 6) == this->team) {
+    if (WV_TEAM(shot) == this->team) {
         print_debug("[PLAYER] Shot is friendly.");
         if (shot & WF_TARGET_ALLIES) {
-            print_debug("[PLAYER] Shot has friendly-fire flag.");
-            this->changeHp(WV_DAMAGE(shot) * (shot & WF_TYPE_HEAL ? 1 : -1));
+            print_event("[PLAYER] Dealing %d friendly damage", damage);
+            this->changeHp(damage);
         }
     } else {
         print_debug("[PLAYER] Shot is hostile.");
         if (shot & WF_TARGET_ENEMIES) {
-            print_debug("[PLAYER] Shot has holstile-fire flag.");
-            this->changeHp(WV_DAMAGE(shot) * (shot & WF_TYPE_HEAL ? 1 : -1)); 
+            print_event("[PLAYER] Dealing %d hostile damage", damage);
+            this->changeHp(damage); 
         }
     }
 }

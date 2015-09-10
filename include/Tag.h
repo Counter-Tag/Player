@@ -11,7 +11,6 @@
 #include "HUD.h"
 #include "IR.h"
 #include "Audio.h"
-#include "ContextProvider.h"
 
 /**
  * @brief Glue code for HW and logic
@@ -35,9 +34,18 @@ public:
     void reload();
     void fire();
 
-    static void seedRNG();
+    Player* getPlayer();
+    Weapon* getWeapon();
+    Audio*  getAudio();
+    HUD*    getHud();
+    IR*     getIr();
+
+    static Tag* getInstance();
+    static inline void seedRNG();
 
 private:
+    static Tag* inst;
+
     Player* player;
     Weapon* weapon;
     Audio audio;

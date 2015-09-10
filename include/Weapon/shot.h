@@ -10,34 +10,32 @@ typedef struct weapon_shot {
 
 #define NULL_SHOT (shot_t) 0xffff
 
-const uint8_t SHOT_REAL_SIZE = 7;
-
 // Shot Flags
 // bit0 Shot type (damage/heal)
-const uint8_t WF_TYPE_HEAL =      0b00100000;
-const uint8_t WV_TYPE_HEAL =      5;
+const uint8_t WF_TYPE_HEAL =      0b00010000;
 
 // bit1 Damage allies
-const uint8_t WF_TARGET_ALLIES =  0b00010000;
-const uint8_t WV_TARGET_ALLIES =  4;
+const uint8_t WF_TARGET_ALLIES =  0b00001000;
 // bit2 Heal enemies
-const uint8_t WF_TARGET_ENEMIES = 0b00001000;
-const uint8_t WV_TARGET_ENEMIES = 3;
+const uint8_t WF_TARGET_ENEMIES = 0b00000100;
 
 // Filters
-const uint8_t WF_TEAM =           0b11000000;
-const uint8_t WF_DAMAGE =         0b00000110;
+const uint8_t WF_TEAM =           0b01100000;
+const uint8_t WF_DAMAGE =         0b00000011;
+
+const uint8_t WS_TEAM = 5;
 
 // Values for damage field
 const uint8_t WV_DAMAGE_1 =       0b00000000;
-const uint8_t WV_DAMAGE_5 =       0b00000010;
-const uint8_t WV_DAMAGE_10 =      0b00000100;
-const uint8_t WV_DAMAGE_100 =     0b00000110;
+const uint8_t WV_DAMAGE_5 =       0b00000001;
+const uint8_t WV_DAMAGE_10 =      0b00000010;
+const uint8_t WV_DAMAGE_100 =     0b00000011;
 // Last bit is unused
 
 const uint8_t WV_DAMAGES[] = {1, 5, 10, 100};
 
-#define WV_DAMAGE(shot) WV_DAMAGES[(shot & WF_DAMAGE) >> 1]
+#define WV_DAMAGE(shot) WV_DAMAGES[(shot & WF_DAMAGE)]
+#define WV_TEAM(shot) ((shot & WF_TEAM) >> 5)
 
 /* Little explanation about damages:
  * Last 2 bits of the "shot" bitmap are used to define how much damage deals that shot.

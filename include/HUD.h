@@ -4,7 +4,6 @@
 #include <LiquidCrystal.h>
 #include "configuration.h"
 #include "Debug.h"
-#include "ContextProvider.h"
 
 class HUD {
 public:

@@ -1,5 +1,7 @@
 #include "../include/Tag.h"
 
+Tag* Tag::inst = NULL;
+
 Tag::Tag() : audio(), hud(), ir() {
     pinMode(RELOAD_PIN, INPUT);
     pinMode(FIRE_PIN, INPUT);
@@ -17,6 +19,8 @@ Tag::Tag() : audio(), hud(), ir() {
     fireBtnStatus = false;
     skillBtnStatus = false;
     spawnBtnStatus = false;
+
+    Tag::inst = this;
 }
 
 void Tag::spawn(uint8_t playerId, uint8_t weaponId) {
@@ -45,8 +49,6 @@ void Tag::spawn(const char* playerName, const char* weaponName, uint8_t team) {
 }
 
 void Tag::init() {
-    ContextProvider::set("Weapon", weapon);
-    ContextProvider::set("Player", player);
     player->spawn();
     print_event("[CORE] Spawned %s with an %s.", player->getClassName(), player->getWeaponName());
     hud.updateHp(player->getHp());
@@ -62,9 +64,11 @@ void Tag::fire() {
     if (player->canFire()) {
         print_debug("[CORE] Firing.");
         audio.stop();
-        ir.fire(*player->fire());
+        ir.send((ir_pkt_t) *player->fire());
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
         audio.playFire();
+    } else if (player->isAlive() && player->getWeaponMagazineAmmo() == 0) {
+        this->reload();
     }
 }
 
@@ -102,7 +106,7 @@ void Tag::checkReload() {
 
 void Tag::checkFire() {
     if (!digitalRead(FIRE_PIN)) {
-        if (!fireBtnStatus || player->getWeaponType()) {
+        if (!fireBtnStatus || player->getWeaponType() == Weapon::TYPE_AUTO) {
             print_debug("[CORE] Fire button pressed.");
             fire();
         }
@@ -127,11 +131,11 @@ void Tag::checkSkill() {
 }
 
 void Tag::checkReceiveFire() {
-    shot_t shot = ir.getShot();
+    shot_t shot = (shot_t) ir.recv();
 
-    if (player->isAlive()) {
-        if (shot != NULL_SHOT) {
-            print_event("[CORE] Received shot '%x'.", (uint8_t) shot);
+    if (shot != NULL_SHOT) {
+        if (player->isAlive()) {
+            print_event("[CORE] Received shot 0x%x.", (uint8_t) shot);
             seedRNG();
             player->receiveShot(shot);
             hud.updateHp(player->getHp());
@@ -143,7 +147,31 @@ void Tag::checkReceiveFire() {
     }
 }
 
-void Tag::seedRNG() {
+Player* Tag::getPlayer() {
+    return this->player;
+}
+
+Weapon* Tag::getWeapon() {
+    return this->weapon;
+}
+
+Audio* Tag::getAudio() {
+    return &(this->audio);
+}
+
+HUD* Tag::getHud() {
+    return &(this->hud);
+}
+
+IR* Tag::getIr() {
+    return &(this->ir);
+}
+
+Tag* Tag::getInstance() {
+    return Tag::inst;
+}
+
+inline void Tag::seedRNG() {
     print_debug("[CORE] Seeding RNG with %lu.", millis());
     srand(millis());
 }

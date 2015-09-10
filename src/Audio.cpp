@@ -3,8 +3,6 @@
 Audio::Audio() : tmrpcm() {
     tmrpcm.speakerPin = SPKR_PIN;
 
-    ContextProvider::set("Audio", this);
-
     initialized = SD.begin(SDCS_PIN);
 
     if (initialized) {
