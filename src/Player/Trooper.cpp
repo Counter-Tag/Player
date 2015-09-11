@@ -1,7 +1,7 @@
 #include "../../include/Player/Trooper.h"
 #include "../../include/Weapon/shot.h"
 
-Trooper::Trooper(Weapon* weapon) : Player::Player(weapon) {
+Trooper::Trooper() {
     this->maxHp = 100;
 
     this->initInModifiers(0);

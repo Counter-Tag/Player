@@ -7,7 +7,8 @@
 
 class Player {
 public:
-    Player(Weapon* weapon);
+    Player();
+    virtual ~Player();
     
     virtual bool canFire();
     virtual bool canReload();
@@ -30,8 +31,8 @@ public:
     uint8_t getHp();
     void changeHp(int8_t hp);
 
-    Weapon* getWeaponPtr();
-    void setWeaponPtr(Weapon* weapon);
+    Weapon* getWeapon();
+    void setWeapon(Weapon* weapon);
 
     uint8_t getWeaponAmmo();
     uint8_t getWeaponMagazineAmmo();

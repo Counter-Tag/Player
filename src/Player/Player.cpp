@@ -1,7 +1,14 @@
 #include "../../include/Player/Player.h"
 
-Player::Player(Weapon* weapon) {
-    this->weapon = weapon;
+Player::Player() {
+    this->weapon = NULL;
+}
+
+Player::~Player() {
+    if (this->inModifiersSize)
+        free(this->inModifiers);
+    if (this->outModifiersSize)
+        free(this->outModifiers);
 }
 
 bool Player::canFire() {
@@ -86,10 +93,10 @@ void Player::spawn() {
     this->refill();
 }
 
-Weapon* Player::getWeaponPtr() {
+Weapon* Player::getWeapon() {
     return this->weapon;
 }
-void Player::setWeaponPtr(Weapon* weapon) {
+void Player::setWeapon(Weapon* weapon) {
     this->weapon = weapon;
 }
 
@@ -137,6 +144,8 @@ void Player::initOutModifiers(uint8_t no) {
     
     if (no != 0) {
         this->outModifiers = (void(**)(weapon_shot_t*)) malloc(sizeof(void(*)(weapon_shot_t*)) * this->outModifiersSize);
+    } else {
+        this->outModifiers = NULL;
     }
 }
 
@@ -145,6 +154,8 @@ void Player::initInModifiers(uint8_t no) {
     
     if (no != 0) {
         this->inModifiers = (void(**)(shot_t*)) malloc(sizeof(void(*)(shot_t*)) * this->inModifiersSize);
+    } else {
+        this->outModifiers = NULL;
     }
 }
 

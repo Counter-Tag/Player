@@ -4,6 +4,7 @@ Weapon::Weapon() {
     this->nextFire = 0;
 }
 
+Weapon::~Weapon() {}
 
 bool Weapon::canFire() {
     return this->magazineAmmo > 0 && this->nextFire < millis();
