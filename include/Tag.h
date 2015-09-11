@@ -11,6 +11,7 @@
 #include "HUD.h"
 #include "IR.h"
 #include "Audio.h"
+#include "Commander.h"
 
 /**
  * @brief Glue code for HW and logic
@@ -26,7 +27,7 @@ public:
     void checkReload();
     void checkSkill();
     void checkFire();
-    void checkReceiveFire();
+    void checkIR();
 
     void updateClass(uint8_t classId);
     void updateWeapon(uint8_t weaponId);
@@ -51,6 +52,7 @@ private:
     Audio audio;
     HUD hud;
     IR ir;
+    Commander commander;
 
     bool reloadBtnStatus;
     bool skillBtnStatus;

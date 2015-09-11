@@ -2,7 +2,7 @@
 
 Tag* Tag::inst = NULL;
 
-Tag::Tag() : audio(), hud(), ir() {
+Tag::Tag() : audio(), hud(), ir(), commander(this) {
     pinMode(RELOAD_PIN, INPUT);
     pinMode(FIRE_PIN, INPUT);
     pinMode(SKILL_PIN, INPUT);
@@ -31,11 +31,11 @@ void Tag::updateClass(uint8_t classId) {
     delete player;
 
     switch (classId) {
-    case 0x00:
+        case 0x00:
         player = new Trooper();
         print_event("Created player %s", player->getClassName());
         break;
-    default:
+        default:
         player = NULL;
         print_error("[CORE] Unknown class ID 0x%x", classId);
     }
@@ -47,11 +47,11 @@ void Tag::updateWeapon(uint8_t weaponId) {
     delete weapon;
 
     switch (weaponId) {
-    case 0x00:
+        case 0x00:
         weapon = new AK47();
         print_event("Created weapon %s", weapon->getName());
         break;
-    default:
+        default:
         weapon = NULL;
         print_error("[CORE] Unknown class ID 0x%x", weaponId);
     }
@@ -105,7 +105,7 @@ void Tag::loop() {
     checkReload();
     checkSkill();
     checkFire();
-    checkReceiveFire();
+    checkIR();
 }
 
 
@@ -148,19 +148,24 @@ void Tag::checkSkill() {
     }
 }
 
-void Tag::checkReceiveFire() {
-    shot_t shot = (shot_t) ir.recv();
+void Tag::checkIR() {
+    ir_pkt_t packet = ir.recv();
 
-    if (shot != NULL_SHOT) {
-        if (player->isAlive()) {
-            print_event("[CORE] Received shot 0x%x.", (uint8_t) shot);
-            seedRNG();
-            player->receiveShot(shot);
-            hud.updateHp(player->getHp());
-        }
+    if (packet != IR::NULL_PKT) {
+        seedRNG();
 
-        if (!player->isAlive()) {
-            audio.playDeath();
+        if ((packet & Commander::CF_CMD) >> Commander::CV_CMD) {
+            commander.run(packet);
+        } else {
+            if (player->isAlive()) {
+                print_event("[CORE] Received shot 0x%x.", (uint8_t) packet);
+                player->receiveShot(packet);
+                hud.updateHp(player->getHp());
+            }
+
+            if (!player->isAlive()) {
+                audio.playDeath();
+            }
         }
     }
 }
