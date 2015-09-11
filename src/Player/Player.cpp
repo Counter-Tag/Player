@@ -5,10 +5,8 @@ Player::Player() {
 }
 
 Player::~Player() {
-    if (this->inModifiersSize)
-        free(this->inModifiers);
-    if (this->outModifiersSize)
-        free(this->outModifiers);
+    free(this->inModifiers);
+    free(this->outModifiers);
 }
 
 bool Player::canFire() {
@@ -55,6 +53,7 @@ void Player::reload() {
 }
 
 void Player::refill() {
+    print_event("[PLAYER] Weapon refilled.");
     this->weapon->refill();
 }
 
@@ -80,8 +79,6 @@ void Player::changeHp(int8_t hp) {
 
 bool Player::isAlive() {
     return this->hp != 0;
-    // Debugging
-    //return true;
 }
 
 const char* Player::getClassName() {
@@ -89,7 +86,7 @@ const char* Player::getClassName() {
 }
 
 void Player::spawn() {
-    this->hp = this->maxHp;
+    this->changeHp(this->maxHp);
     this->refill();
 }
 
