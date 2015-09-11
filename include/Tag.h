@@ -28,14 +28,14 @@ public:
     void checkFire();
     void checkReceiveFire();
 
-    void spawn(uint8_t playerId, uint8_t weaponId);
-    void spawn(const char* playerName, const char* weaponName, uint8_t team);
-    void init();
+    void updateClass(uint8_t classId);
+    void updateWeapon(uint8_t weaponId);
+
+    void spawn();
     void reload();
     void fire();
 
     Player* getPlayer();
-    Weapon* getWeapon();
     Audio*  getAudio();
     HUD*    getHud();
     IR*     getIr();
