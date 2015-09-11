@@ -11,6 +11,7 @@
 #include "HUD.h"
 #include "IR.h"
 #include "Audio.h"
+#include "Commander.h"
 
 /**
  * @brief Glue code for HW and logic
@@ -26,16 +27,16 @@ public:
     void checkReload();
     void checkSkill();
     void checkFire();
-    void checkReceiveFire();
+    void checkIR();
 
-    void spawn(uint8_t playerId, uint8_t weaponId);
-    void spawn(const char* playerName, const char* weaponName, uint8_t team);
-    void init();
+    void updateClass(uint8_t classId);
+    void updateWeapon(uint8_t weaponId);
+
+    void spawn();
     void reload();
     void fire();
 
     Player* getPlayer();
-    Weapon* getWeapon();
     Audio*  getAudio();
     HUD*    getHud();
     IR*     getIr();
@@ -51,6 +52,7 @@ private:
     Audio audio;
     HUD hud;
     IR ir;
+    Commander commander;
 
     bool reloadBtnStatus;
     bool skillBtnStatus;

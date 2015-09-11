@@ -2,7 +2,7 @@
 
 Tag* Tag::inst = NULL;
 
-Tag::Tag() : audio(), hud(), ir() {
+Tag::Tag() : audio(), hud(), ir(), commander(this) {
     pinMode(RELOAD_PIN, INPUT);
     pinMode(FIRE_PIN, INPUT);
     pinMode(SKILL_PIN, INPUT);
@@ -20,43 +20,61 @@ Tag::Tag() : audio(), hud(), ir() {
     skillBtnStatus = false;
     spawnBtnStatus = false;
 
+    player = NULL;
+    weapon = NULL;
+
     Tag::inst = this;
 }
 
-void Tag::spawn(uint8_t playerId, uint8_t weaponId) {
-    if (weaponId == 0x00) {
-        weapon = new AK47();
+
+void Tag::updateClass(uint8_t classId) {
+    delete player;
+
+    switch (classId) {
+        case 0x00:
+        player = new Trooper();
+        print_event("Created player %s", player->getClassName());
+        break;
+        default:
+        player = NULL;
+        print_error("[CORE] Unknown class ID 0x%x", classId);
     }
 
-    if (playerId == 0x00) {
-        player = new Trooper(weapon);
-    }
-
-    init();
+    spawn();
 }
 
-void Tag::spawn(const char* playerName, const char* weaponName, uint8_t team) {
-    if (!strcmp(weaponName, "AK47")) {
+void Tag::updateWeapon(uint8_t weaponId) {
+    delete weapon;
+
+    switch (weaponId) {
+        case 0x00:
         weapon = new AK47();
+        print_event("Created weapon %s", weapon->getName());
+        break;
+        default:
+        weapon = NULL;
+        print_error("[CORE] Unknown class ID 0x%x", weaponId);
     }
 
-    if (!strcmp(playerName, "Trooper")) {
-        player = new Trooper(weapon);
-        player->setTeam(team);
-    }
-
-    init();
+    spawn();
 }
 
-void Tag::init() {
-    player->spawn();
-    print_event("[CORE] Spawned %s with an %s.", player->getClassName(), player->getWeaponName());
-    hud.updateHp(player->getHp());
-    hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
-    hud.updateClass(player->getClassName());
-    hud.updateWeapon(player->getWeaponName());
+void Tag::spawn() {
+    if (player != NULL && weapon != NULL) {
+        player->setWeapon(weapon);
+        player->spawn();
 
-    audio.playWeapon(player->getWeaponName());
+        print_event("[CORE] Spawned %s with an %s.", player->getClassName(), player->getWeaponName());
+
+        hud.updateHp(player->getHp());
+        hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
+        hud.updateClass(player->getClassName());
+        hud.updateWeapon(player->getWeaponName());
+
+        audio.playWeapon(player->getWeaponName());
+    } else {
+        print_error("[CORE] Refusing to spawn with partial initialization.");
+    }
 }
 
 void Tag::fire() {
@@ -87,7 +105,7 @@ void Tag::loop() {
     checkReload();
     checkSkill();
     checkFire();
-    checkReceiveFire();
+    checkIR();
 }
 
 
@@ -130,29 +148,30 @@ void Tag::checkSkill() {
     }
 }
 
-void Tag::checkReceiveFire() {
-    shot_t shot = (shot_t) ir.recv();
+void Tag::checkIR() {
+    ir_pkt_t packet = ir.recv();
 
-    if (shot != NULL_SHOT) {
-        if (player->isAlive()) {
-            print_event("[CORE] Received shot 0x%x.", (uint8_t) shot);
-            seedRNG();
-            player->receiveShot(shot);
-            hud.updateHp(player->getHp());
-        }
+    if (packet != IR::NULL_PKT) {
+        seedRNG();
 
-        if (!player->isAlive()) {
-            audio.playDeath();
+        if ((packet & Commander::CF_CMD) >> Commander::CV_CMD) {
+            commander.run(packet);
+        } else {
+            if (player->isAlive()) {
+                print_event("[CORE] Received shot 0x%x.", (uint8_t) packet);
+                player->receiveShot(packet);
+                hud.updateHp(player->getHp());
+            }
+
+            if (!player->isAlive()) {
+                audio.playDeath();
+            }
         }
     }
 }
 
 Player* Tag::getPlayer() {
     return this->player;
-}
-
-Weapon* Tag::getWeapon() {
-    return this->weapon;
 }
 
 Audio* Tag::getAudio() {

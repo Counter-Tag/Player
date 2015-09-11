@@ -1,7 +1,12 @@
 #include "../../include/Player/Player.h"
 
-Player::Player(Weapon* weapon) {
-    this->weapon = weapon;
+Player::Player() {
+    this->weapon = NULL;
+}
+
+Player::~Player() {
+    free(this->inModifiers);
+    free(this->outModifiers);
 }
 
 bool Player::canFire() {
@@ -48,6 +53,7 @@ void Player::reload() {
 }
 
 void Player::refill() {
+    print_event("[PLAYER] Weapon refilled.");
     this->weapon->refill();
 }
 
@@ -73,8 +79,6 @@ void Player::changeHp(int8_t hp) {
 
 bool Player::isAlive() {
     return this->hp != 0;
-    // Debugging
-    //return true;
 }
 
 const char* Player::getClassName() {
@@ -82,14 +86,14 @@ const char* Player::getClassName() {
 }
 
 void Player::spawn() {
-    this->hp = this->maxHp;
+    this->changeHp(this->maxHp);
     this->refill();
 }
 
-Weapon* Player::getWeaponPtr() {
+Weapon* Player::getWeapon() {
     return this->weapon;
 }
-void Player::setWeaponPtr(Weapon* weapon) {
+void Player::setWeapon(Weapon* weapon) {
     this->weapon = weapon;
 }
 
@@ -137,6 +141,8 @@ void Player::initOutModifiers(uint8_t no) {
     
     if (no != 0) {
         this->outModifiers = (void(**)(weapon_shot_t*)) malloc(sizeof(void(*)(weapon_shot_t*)) * this->outModifiersSize);
+    } else {
+        this->outModifiers = NULL;
     }
 }
 
@@ -145,6 +151,8 @@ void Player::initInModifiers(uint8_t no) {
     
     if (no != 0) {
         this->inModifiers = (void(**)(shot_t*)) malloc(sizeof(void(*)(shot_t*)) * this->inModifiersSize);
+    } else {
+        this->outModifiers = NULL;
     }
 }
 

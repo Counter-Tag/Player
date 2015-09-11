@@ -5,7 +5,8 @@ Tag* tag;
 void setup() {
     Serial.begin(9600);
     tag = new Tag();
-    tag->spawn("Trooper", "AK47", digitalRead(TEAM_PIN));
+    tag->updateClass(0x00);
+    tag->updateWeapon(0x00);
 }
 
 void loop() {
