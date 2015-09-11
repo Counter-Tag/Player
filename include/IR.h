@@ -21,6 +21,8 @@ public:
 
     static IR* instance;
 
+    static const ir_pkt_t NULL_PKT = (ir_pkt_t) 0xffff;
+
 private:
     inline void reset();
 
@@ -37,8 +39,6 @@ private:
     static const uint8_t START_BIT = 7;
 
     static const uint16_t PERIODS[2];
-
-    static const ir_pkt_t NULL_PKT = (ir_pkt_t) 0xffff;
 
     static bool initialized;
 
