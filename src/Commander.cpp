@@ -17,7 +17,7 @@ ir_pkt_t Commander::encode(const command_t* cmd) {
         packet |= Commander::CF_LONGARGS & (cmd->args << Commander::CV_LONGARGS);
     }
 
-    print_event("Encoded: 0x%x", packet);
+    print_debug("[CMD] Encoded: 0x%x", packet);
 
     return packet;
 }
@@ -31,7 +31,7 @@ command_t* Commander::decode(command_t* dest, ir_pkt_t cmd) {
         dest->args = CF_LONGARGS & cmd;
     }
 
-    print_event("Decoded: {short: %d, opcode: 0x%x, args: 0x%x}", dest->is_short, dest->opcode, dest->args);
+    print_debug("[CMD] Decoded: {short: %d, opcode: 0x%x, args: 0x%x}", dest->is_short, dest->opcode, dest->args);
 
     return dest;
 }
@@ -47,7 +47,7 @@ void Commander::dispatch(command_t* cmd) {
     if (cmd->is_short) {
         switch (cmd->opcode) {
             case OP_RESPAWN:
-            this->tag->getPlayer()->spawn();
+            this->tag->spawn();
             break;
         }
     } else {

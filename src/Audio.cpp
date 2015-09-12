@@ -6,9 +6,9 @@ Audio::Audio() : tmrpcm() {
     initialized = SD.begin(SDCS_PIN);
 
     if (initialized) {
-        print_debug("[AUDIO] Audio module initialized.");
+        print_debug("[AUD] Audio module initialized.");
     } else {
-        print_error("[AUDIO] Error initializing audio.");
+        print_error("[AUD] Error initializing audio.");
     }
 }
 
@@ -35,7 +35,7 @@ void Audio::stop() {
 
 void Audio::play(const char* track) {
     if (initialized) {
-        print_event("[AUDIO] Playing '%s'.", track);
+        print_debug("[AUDIO] Playing '%s'.", track);
         tmrpcm.play((char*) track);
     }
 }

@@ -31,6 +31,7 @@ public:
 
     void updateClass(uint8_t classId);
     void updateWeapon(uint8_t weaponId);
+    void updateTeam(uint8_t team);
 
     void spawn();
     void reload();

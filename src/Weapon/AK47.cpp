@@ -1,7 +1,7 @@
 #include "../../include/Weapon/AK47.h"
 
 AK47::AK47() {
-    this->cooldown = 200;
+    this->cooldown = 150;
     this->reloadCooldown = 2000;
     
     this->capacity = 120;

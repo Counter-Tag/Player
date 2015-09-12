@@ -6,13 +6,11 @@ Tag::Tag() : audio(), hud(), ir(), commander(this) {
     pinMode(RELOAD_PIN, INPUT);
     pinMode(FIRE_PIN, INPUT);
     pinMode(SKILL_PIN, INPUT);
-    pinMode(TEAM_PIN, INPUT);
     pinMode(POT_SELECT_PIN, OUTPUT);
 
     digitalWrite(RELOAD_PIN, HIGH);
     digitalWrite(FIRE_PIN, HIGH);
     digitalWrite(SKILL_PIN, HIGH);
-    digitalWrite(TEAM_PIN, HIGH);
     digitalWrite(POT_SELECT_PIN, HIGH);
 
     reloadBtnStatus = false;
@@ -33,11 +31,11 @@ void Tag::updateClass(uint8_t classId) {
     switch (classId) {
         case 0x00:
         player = new Trooper();
-        print_event("Created player %s", player->getClassName());
+        print_debug("Created player %s", player->getClassName());
         break;
         default:
         player = NULL;
-        print_error("[CORE] Unknown class ID 0x%x", classId);
+        print_error("Unknown class 0x%x", classId);
     }
 
     spawn();
@@ -49,14 +47,19 @@ void Tag::updateWeapon(uint8_t weaponId) {
     switch (weaponId) {
         case 0x00:
         weapon = new AK47();
-        print_event("Created weapon %s", weapon->getName());
+        print_debug("Created weapon %s", weapon->getName());
         break;
+
         default:
         weapon = NULL;
-        print_error("[CORE] Unknown class ID 0x%x", weaponId);
+        print_error("Unknown class 0x%x", weaponId);
     }
 
     spawn();
+}
+
+void Tag::updateTeam(uint8_t team) {
+    player->setTeam(team);
 }
 
 void Tag::spawn() {
@@ -64,7 +67,7 @@ void Tag::spawn() {
         player->setWeapon(weapon);
         player->spawn();
 
-        print_event("[CORE] Spawned %s with an %s.", player->getClassName(), player->getWeaponName());
+        print_event("Spawned %s with an %s.", player->getClassName(), player->getWeaponName());
 
         hud.updateHp(player->getHp());
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
@@ -73,27 +76,25 @@ void Tag::spawn() {
 
         audio.playWeapon(player->getWeaponName());
     } else {
-        print_error("[CORE] Refusing to spawn with partial initialization.");
+        print_error("Refusing, partial initialization.");
     }
 }
 
 void Tag::fire() {
     seedRNG();
     if (player->canFire()) {
-        print_debug("[CORE] Firing.");
+        print_debug("Firing.");
         audio.stop();
         ir.send((ir_pkt_t) *player->fire());
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
         audio.playFire();
-    } else if (player->isAlive() && player->getWeaponMagazineAmmo() == 0) {
-        this->reload();
     }
 }
 
 void Tag::reload() {
     seedRNG();
     if (player->canReload()) {
-        print_debug("[CORE] Reloading.");
+        print_debug("Reloading.");
         player->reload();
         hud.updateAmmo(player->getWeaponMagazineAmmo(), player->getWeaponAmmo());
         audio.playReload();
@@ -112,7 +113,7 @@ void Tag::loop() {
 void Tag::checkReload() {
     if (!digitalRead(RELOAD_PIN)) {
         if (!reloadBtnStatus) {
-            print_debug("[CORE] Reload button pressed.");
+            print_debug("Reload button pressed.");
             reload();
         }
 
@@ -125,7 +126,7 @@ void Tag::checkReload() {
 void Tag::checkFire() {
     if (!digitalRead(FIRE_PIN)) {
         if (!fireBtnStatus || player->getWeaponType() == Weapon::TYPE_AUTO) {
-            print_debug("[CORE] Fire button pressed.");
+            print_debug("Fire button pressed.");
             fire();
         }
 
@@ -138,7 +139,7 @@ void Tag::checkFire() {
 void Tag::checkSkill() {
     if (!digitalRead(SKILL_PIN)) {
         if (!skillBtnStatus) {
-            print_debug("[CORE] Skill button pressed.");
+            print_debug("Skill button pressed.");
             //player->activateSkill();
         }
 
@@ -153,18 +154,18 @@ void Tag::checkIR() {
 
     if (packet != IR::NULL_PKT) {
         seedRNG();
+        print_event("Received packet 0x%x.", (uint8_t) packet);
 
         if ((packet & Commander::CF_CMD) >> Commander::CV_CMD) {
             commander.run(packet);
         } else {
             if (player->isAlive()) {
-                print_event("[CORE] Received shot 0x%x.", (uint8_t) packet);
                 player->receiveShot(packet);
                 hud.updateHp(player->getHp());
-            }
 
-            if (!player->isAlive()) {
-                audio.playDeath();
+                if (!player->isAlive()) {
+                    audio.playDeath();
+                }
             }
         }
     }
@@ -191,6 +192,6 @@ Tag* Tag::getInstance() {
 }
 
 inline void Tag::seedRNG() {
-    print_debug("[CORE] Seeding RNG with %lu.", millis());
+    print_debug("Seeding RNG with %lu.", millis());
     srand(millis());
 }

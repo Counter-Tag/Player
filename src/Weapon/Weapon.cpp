@@ -1,7 +1,7 @@
 #include "../../include/Weapon/Weapon.h"
 
 Weapon::Weapon() {
-    this->nextFire = 0;
+    this->nextFire = 2000;
 }
 
 Weapon::~Weapon() {}
@@ -21,7 +21,7 @@ weapon_shot_t* Weapon::fire() {
         --this->magazineAmmo;
     }
 
-    print_event("[WEAPON] Firing %x.", this->shot);
+    print_debug("[WEAPON] Firing %x.", this->shot);
 
     return &this->shot;
 }
