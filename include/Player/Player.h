@@ -2,12 +2,13 @@
 #define PLAYER_H
 
 #include <Arduino.h>
-
+#include "../Debug.h"
 #include "../Weapon/Weapon.h"
 
 class Player {
 public:
-    Player(Weapon* weapon);
+    Player();
+    virtual ~Player();
     
     virtual bool canFire();
     virtual bool canReload();
@@ -24,19 +25,19 @@ public:
 
     virtual void anacron();
 
-    String getClassName();
+    const char* getClassName();
 
     uint8_t getMaxHp();
     uint8_t getHp();
     void changeHp(int8_t hp);
 
-    Weapon* getWeaponPtr();
-    void setWeaponPtr(Weapon* weapon);
+    Weapon* getWeapon();
+    void setWeapon(Weapon* weapon);
 
     uint8_t getWeaponAmmo();
     uint8_t getWeaponMagazineAmmo();
     uint8_t getWeaponType();
-    String getWeaponName();
+    const char* getWeaponName();
 
     uint8_t getTeam();
     void setTeam(uint8_t team);
@@ -63,7 +64,9 @@ protected:
     uint8_t outModifiersSize;
     uint8_t inModifiersSize;
 
-    String name;
+    char name[16];
+
+    static const uint8_t HP_RANDOM_PERCENT = 20;
 };
 
 #endif

@@ -1,18 +1,11 @@
 #include "../include/HUD.h"
 
 HUD::HUD() : lcd(DISPLAY_PIN_RS, DISPLAY_PIN_E, DISPLAY_PIN_D4, DISPLAY_PIN_D5, DISPLAY_PIN_D6, DISPLAY_PIN_D7) {
+    this->lcd.createChar(0, HUD::heart);
+    this->lcd.createChar(1, HUD::bullet);
+    this->lcd.createChar(2, HUD::skull);
+    this->lcd.begin(HUD::cols, HUD::rows = 2);
 
-  this->lcd.createChar(0, HUD::heart);
-  this->lcd.createChar(1, HUD::bullet);
-  this->lcd.createChar(2, HUD::skull);
-  this->lcd.begin(HUD::cols, HUD::rows = 2);
-
-  this->init();
-  this->updateHp(0);
-  this->updateAmmo(0, 0);
-}
-
-void HUD::init() {
     lcd.setCursor(0, 0);
     lcd.write((uint8_t) 0);
     lcd.write(':');
@@ -20,6 +13,9 @@ void HUD::init() {
     lcd.setCursor(8, 0);
     lcd.write((uint8_t) 1);
     lcd.write(':');
+
+    this->updateHp(0);
+    this->updateAmmo(0, 0);
 }
 
 void HUD::updateHp(int hp) {
@@ -37,18 +33,14 @@ void HUD::updateAmmo(int magazine, int total) {
   lcd.print(this->buf);
 }
 
-void HUD::updateWeapon(String weapon) {
-  sprintf(this->buf, "%s", weapon.c_str());
-
+void HUD::updateWeapon(const char* weapon) {
   lcd.setCursor(8, 1);
-  lcd.print(this->buf);
+  lcd.print(weapon);
 }
 
-void HUD::updateClass(String cls) {
-  sprintf(this->buf, "%s", cls.c_str());
-
+void HUD::updateClass(const char* cls) {
   lcd.setCursor(0, 1);
-  lcd.print(this->buf);
+  lcd.print(cls);
 }
 
 uint8_t HUD::cols = 16;

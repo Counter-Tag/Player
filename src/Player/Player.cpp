@@ -1,7 +1,12 @@
 #include "../../include/Player/Player.h"
 
-Player::Player(Weapon* weapon) {
-    this->weapon = weapon;
+Player::Player() {
+    this->weapon = NULL;
+}
+
+Player::~Player() {
+    free(this->inModifiers);
+    free(this->outModifiers);
 }
 
 bool Player::canFire() {
@@ -14,8 +19,10 @@ bool Player::canReload() {
 
 shot_t* Player::fire() {
     memcpy(&this->weapon_shot, this->weapon->fire(), sizeof(weapon_shot_t));
-    this->weapon_shot.shot |= (this->team << 6) & WF_TEAM;
+    this->weapon_shot.shot |= (this->team << WS_TEAM) & WF_TEAM;
     this->applyOutModifiers(&this->weapon_shot);
+
+    print_event("[PLAYER] Firing 0x%x", this->weapon_shot);
 
     return (shot_t*) &this->weapon_shot;
 }
@@ -23,15 +30,20 @@ shot_t* Player::fire() {
 void Player::receiveShot(shot_t shot) {
     this->applyInModifiers(&shot);
 
-    if (((shot & WF_TEAM) >> 6) == this->team) {
+    print_event("[PLAYER] Received shot 0x%x.", (uint8_t) shot);
+    int8_t damage = WV_DAMAGE(shot) * (shot & WF_TYPE_HEAL ? 1 : -1);
+
+    if (WV_TEAM(shot) == this->team) {
+        print_debug("[PLAYER] Shot is friendly.");
         if (shot & WF_TARGET_ALLIES) {
-            Serial.println("Received ally shot");
-            this->changeHp(WV_DAMAGE(shot) * (shot & WF_TYPE_HEAL ? 1 : -1));
+            print_event("[PLAYER] Dealing %d friendly damage", damage);
+            this->changeHp(damage);
         }
     } else {
+        print_debug("[PLAYER] Shot is hostile.");
         if (shot & WF_TARGET_ENEMIES) {
-            Serial.println("Received enemy shot");
-            this->changeHp(WV_DAMAGE(shot) * (shot & WF_TYPE_HEAL ? 1 : -1)); 
+            print_event("[PLAYER] Dealing %d hostile damage", damage);
+            this->changeHp(damage); 
         }
     }
 }
@@ -41,6 +53,7 @@ void Player::reload() {
 }
 
 void Player::refill() {
+    print_event("[PLAYER] Weapon refilled.");
     this->weapon->refill();
 }
 
@@ -58,29 +71,29 @@ void Player::changeHp(int8_t hp) {
     } else if (this->hp + hp < 0) {
         this->hp = 0;
     } else {
-        this->hp += hp;
+        this->hp += hp * (1 + (float) (rand() % (HP_RANDOM_PERCENT * 2) - HP_RANDOM_PERCENT) / 100);
     }
+
+    print_event("[PLAYER] HP changed to %u", this->hp);
 }
 
 bool Player::isAlive() {
-    //return this->hp != 0;
-    // Debugging
-    return true;
+    return this->hp != 0;
 }
 
-String Player::getClassName() {
+const char* Player::getClassName() {
     return this->name;
 }
 
 void Player::spawn() {
-    this->hp = this->maxHp;
+    this->changeHp(this->maxHp);
     this->refill();
 }
 
-Weapon* Player::getWeaponPtr() {
+Weapon* Player::getWeapon() {
     return this->weapon;
 }
-void Player::setWeaponPtr(Weapon* weapon) {
+void Player::setWeapon(Weapon* weapon) {
     this->weapon = weapon;
 }
 
@@ -96,7 +109,7 @@ uint8_t Player::getWeaponType() {
     return this->weapon->getType();
 }
 
-String Player::getWeaponName() {
+const char* Player::getWeaponName() {
     return this->weapon->getName();
 }
 
@@ -128,6 +141,8 @@ void Player::initOutModifiers(uint8_t no) {
     
     if (no != 0) {
         this->outModifiers = (void(**)(weapon_shot_t*)) malloc(sizeof(void(*)(weapon_shot_t*)) * this->outModifiersSize);
+    } else {
+        this->outModifiers = NULL;
     }
 }
 
@@ -136,6 +151,8 @@ void Player::initInModifiers(uint8_t no) {
     
     if (no != 0) {
         this->inModifiers = (void(**)(shot_t*)) malloc(sizeof(void(*)(shot_t*)) * this->inModifiersSize);
+    } else {
+        this->outModifiers = NULL;
     }
 }
 

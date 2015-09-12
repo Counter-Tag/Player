@@ -1,9 +1,10 @@
 #include "../../include/Weapon/Weapon.h"
 
 Weapon::Weapon() {
-    this->nextFire = 0;
+    this->nextFire = 2000;
 }
 
+Weapon::~Weapon() {}
 
 bool Weapon::canFire() {
     return this->magazineAmmo > 0 && this->nextFire < millis();
@@ -14,11 +15,13 @@ bool Weapon::canReload() {
 }
 
 weapon_shot_t* Weapon::fire() {
-    this->nextFire = millis() + this->cooldown;
+    this->nextFire = millis() + (int) this->cooldown * (1 + (float) (rand() % (COOLDOWN_RANDOM_PERCENT * 2) - COOLDOWN_RANDOM_PERCENT) / 100);
     
     if (this->magazineAmmo > 0) {
         --this->magazineAmmo;
     }
+
+    print_debug("[WEAPON] Firing %x.", this->shot);
 
     return &this->shot;
 }
@@ -37,6 +40,8 @@ void Weapon::reload() {
         this->magazineAmmo = swap;
 
         this->nextFire = millis() + this->reloadCooldown;
+
+        print_debug("[WEAPON] Weapon reloaded.", this->shot);
     }
 }
 
@@ -81,7 +86,7 @@ uint8_t Weapon::getType() {
     return this->type;
 }
 
-String Weapon::getName() {
+const char* Weapon::getName() {
     return this->name;
 }
 

@@ -10,34 +10,37 @@ IR::IR() {
 
     attachInterrupt(INTR_PIN, ir_interrupt, FALLING);
 
-    // TODO: Try NOINLINE macro to call external function from constructor.
-
     pinMode(SEND_PIN, OUTPUT);
 
-    externalBuffer = NULL_SHOT;
+    externalBuffer = IR::NULL_PKT;
     this->reset();
 
     IR::instance = this;
+
+    IR::off(); // Just in case.
+    TCCR2A = _BV(WGM21) | _BV(WGM20);
+    //       Mode         8 Prescaler
+    TCCR2B = _BV(WGM22) | _BV(CS21);
+    OCR2A = 52; // Stop value. For 8 prescaler it equals 52.6
+    OCR2B = 17; // 52.6 / 2 = 26.3 for 50% duty, 52.6 / 3 = 17.533 for 33%.
 }
 
-void IR::fire(shot_t shot) {
-    IR::timerSetup();
-
-    for (int i = START_BIT; i > 0; i--) {
+void IR::send(ir_pkt_t shot) {
+    for (int i = START_BIT; i >= 0; i--) {
         // For each pulse, we send the IR carrier for a fixed length (IR::SHOT_TYPES[0]),
         // and then wait for a variable amount of time, depending on the shot type.
-        TCCR2A |= _BV(COM2B1);
+        IR::on();
         delayMicroseconds(IR::PERIODS[0]);
 
-        TCCR2A &= ~_BV(COM2B1);
-        delayMicroseconds(IR::PERIODS[1 & (shot >> i)]);
+        IR::off();
+        delayMicroseconds(IR::PERIODS[0x01 & (shot >> i)]);
     }
 
     // Turn LED on once more to read last bit, and shut down.
-    TCCR2A |= _BV(COM2B1);
+    IR::on();
     delayMicroseconds(IR::PERIODS[0]);
 
-    TCCR2A &= ~_BV(COM2B1);
+    IR::off();
 }
 
 void IR::interrupt() {
@@ -58,35 +61,22 @@ void IR::interrupt() {
             return;
         }
 
-        if (currentBit == 0) {
-            externalBuffer = (shot_t) buffer;
+        if (currentBit == -1) {
+            externalBuffer = buffer;
             reset();
         }
     }
 }
 
-shot_t IR::getShot() {
-    shot_t shot;
+ir_pkt_t IR::recv() {
+    ir_pkt_t packet;
 
     if (micros() - lastReceptionTime > 2 * IR::PERIODS[1]) {
-        shot = (shot_t) externalBuffer;
-        externalBuffer = NULL_SHOT;
-        return shot;
+        packet = externalBuffer;
+        externalBuffer = NULL_PKT;
+        return packet;
     } else {
-        return NULL_SHOT;
-    }
-}
-
-inline void IR::timerSetup() {
-    if (!initialized) {
-        TCCR2A = _BV(WGM21) | _BV(WGM20);
-        //       Mode         8 Prescaler
-        TCCR2B = _BV(WGM22) | _BV(CS21);
-        OCR2A = 52; // Stop value. For 8 prescaler it equals 52.6
-        OCR2B = 17; // 52.6 / 2 = 26.3 for 50% duty, 52.6 / 3 = 17.533.
-        //TCCR2A |= _BV(COM2B1);
-
-        initialized = true;
+        return NULL_PKT;
     }
 }
 
@@ -97,6 +87,15 @@ inline void IR::reset() {
     currentBit = START_BIT;
     lastReceptionTime = micros();
 }
+
+inline void IR::on() {
+    TCCR2A |= _BV(COM2B1);
+}
+
+inline void IR::off() {
+    TCCR2A &= ~_BV(COM2B1);
+}
+
 
 void ir_interrupt() {
     IR::instance->interrupt();

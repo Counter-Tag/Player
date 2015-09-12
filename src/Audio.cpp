@@ -2,16 +2,13 @@
 
 Audio::Audio() : tmrpcm() {
     tmrpcm.speakerPin = SPKR_PIN;
-}
 
-int Audio::init() {
-    return (initialized = SD.begin(SDCS_PIN));
-}
+    initialized = SD.begin(SDCS_PIN);
 
-void Audio::play(const char* track) {
     if (initialized) {
-        tmrpcm.stopPlayback();
-        tmrpcm.play((char*) track);
+        print_debug("[AUD] Audio module initialized.");
+    } else {
+        print_error("[AUD] Error initializing audio.");
     }
 }
 
@@ -29,6 +26,16 @@ void Audio::playDeath() {
 }
 
 void Audio::playFire() {
-    Serial.println("Fire playing!");
-    play("FIRE.WAV");
+    play("SHOT.WAV");
+}
+
+void Audio::stop() {
+    tmrpcm.stopPlayback();
+}
+
+void Audio::play(const char* track) {
+    if (initialized) {
+        print_debug("[AUDIO] Playing '%s'.", track);
+        tmrpcm.play((char*) track);
+    }
 }

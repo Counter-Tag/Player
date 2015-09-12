@@ -2,23 +2,32 @@
 #define IR_H
 
 #include <Arduino.h>
-#include "Weapon/shot.h"
-#include "common.h"
+#include "configuration.h"
+#include "Debug.h"
+
+typedef uint8_t ir_pkt_t;
+
+#define IS_OPCODE(packet) (0x01 & (packet >> 7))
 
 class IR {
 public:
     IR();
 
     void interrupt();
-    void fire(shot_t shot);
-    shot_t getShot();
+    void send(ir_pkt_t data);
+    ir_pkt_t recv();
 
-    shot_t shot;
+    ir_pkt_t packet;
 
     static IR* instance;
 
+    static const ir_pkt_t NULL_PKT = (ir_pkt_t) 0xffff;
+
 private:
     inline void reset();
+
+    inline void on();
+    inline void off();
 
     static const uint16_t MAX_RECEPTION_TIME = 1000;
 
@@ -27,19 +36,16 @@ private:
 
     static const uint8_t MIN_SHOTS = 2;
 
-    static const uint8_t START_BIT = 8 * sizeof(shot_t) - 1;
+    static const uint8_t START_BIT = 7;
 
     static const uint16_t PERIODS[2];
 
-    uint64_t lastReceptionTime;
-    uint16_t buffer;
-    uint8_t currentBit;
-    shot_t externalBuffer;
-
     static bool initialized;
 
-
-    static inline void timerSetup();
+    uint64_t lastReceptionTime;
+    int8_t currentBit;
+    ir_pkt_t buffer;
+    ir_pkt_t externalBuffer;
 };
 
 void ir_interrupt();

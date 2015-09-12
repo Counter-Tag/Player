@@ -2,11 +2,15 @@
 #define WEAPON_H
 
 #include <Arduino.h>
+#include <string.h>
+#include <stdint.h>
+#include "../Debug.h"
 #include "shot.h"
 
 class Weapon {
 public:
     Weapon();
+    virtual ~Weapon();
 
     virtual weapon_shot_t* fire();
     virtual bool canFire();
@@ -32,11 +36,11 @@ public:
     virtual uint8_t getRange();
 
     uint8_t getType();
-    String getName();
+    const char* getName();
 
     weapon_shot_t  shot;
 
-    String name;
+    char name[16];
 
     static const uint8_t TYPE_SEMI = 0;
     static const uint8_t TYPE_AUTO = 1;
@@ -57,6 +61,8 @@ protected:
     uint8_t magazineCapacity;
 
     uint8_t type;
+
+    static const uint8_t COOLDOWN_RANDOM_PERCENT = 10;
 };
 
 #endif

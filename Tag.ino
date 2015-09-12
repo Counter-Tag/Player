@@ -1,16 +1,19 @@
 #include "include/Tag.h"
 
-Tag tag;
+Tag* tag;
 
 void setup() {
     Serial.begin(9600);
-    //SD.begin(SDCS_PIN);
 
-    Serial.print("Spawning player team ");
-    Serial.println(digitalRead(TEAM_PIN));
-    tag.spawn("Trooper", "AK47", digitalRead(TEAM_PIN));
+    pinMode(TEAM_PIN, INPUT);
+    digitalWrite(TEAM_PIN, HIGH);
+
+    tag = new Tag();
+    tag->updateClass(0x00);
+    tag->updateWeapon(0x00);
+    tag->updateTeam(digitalRead(TEAM_PIN));
 }
 
 void loop() {
-    tag.loop();
+    tag->loop();
 }

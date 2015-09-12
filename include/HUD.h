@@ -2,17 +2,17 @@
 #define HUD_H
 
 #include <LiquidCrystal.h>
-#include "common.h"
+#include "configuration.h"
+#include "Debug.h"
 
 class HUD {
 public:
     HUD();
 
-    void init();
     void updateHp(int hp);
     void updateAmmo(int magazine, int total);
-    void updateWeapon(String weapon);
-    void updateClass(String cls);
+    void updateWeapon(const char* weapon);
+    void updateClass(const char* cls);
 
 private:
     static uint8_t cols;

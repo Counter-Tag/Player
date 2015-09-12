@@ -1,7 +1,7 @@
 #include "../../include/Player/Trooper.h"
 #include "../../include/Weapon/shot.h"
 
-Trooper::Trooper(Weapon* weapon) : Player::Player(weapon) {
+Trooper::Trooper() {
     this->maxHp = 100;
 
     this->initInModifiers(0);
@@ -9,7 +9,7 @@ Trooper::Trooper(Weapon* weapon) : Player::Player(weapon) {
     this->initOutModifiers(0);
     //this->outModifiers[0] = Trooper::bonusWeaponModifier;
 
-    this->name = "Trooper";
+    strcpy(this->name, "Trooper");
 }
 
 // AK-47 bonus
